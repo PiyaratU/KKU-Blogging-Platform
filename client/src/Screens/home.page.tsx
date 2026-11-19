@@ -6,12 +6,13 @@ import Loader from "../components/loader.component";
 import { Post } from "../types/post";
 import BlogCard from "../components/blogpost.component";
 import MinimalBlogPost from "./nobanner-blog";
-import { MdAutoGraph } from "react-icons/md";
+import FeedHero from "../components/FeedHero";
+import FeedSidebar from "../components/FeedSidebar";
 import { activeTabRef } from "../components/Inpage-navigation";
 import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../components/filter-pagination";
 import LoadMoreDataBtn from "../components/load-more.component";
-import { FaTags } from "react-icons/fa";
+import Tag from "../components/ui/Tag";
 import type { HomeBlogState as BlogState } from "../types/blog";
 
 const HomePage = () => {
@@ -49,17 +50,11 @@ const HomePage = () => {
       .map(([tag]) => tag);
   };
 
-  const loadBlogBycategory = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const categories = (
-      e.currentTarget as HTMLButtonElement
-    ).innerText.toLowerCase();
+  // กดแท็กเดิมซ้ำ = กลับไปหน้าหลัก
+  const loadBlogBycategory = (tag: string) => {
+    const category = tag.toLowerCase();
     setBlogs(null);
-
-    if (pageState === categories) {
-      setPageState("หน้าหลัก");
-      return;
-    }
-    setPageState(categories);
+    setPageState(pageState === category ? "หน้าหลัก" : category);
   };
 
   const getAuthHeaders = () => {
@@ -195,148 +190,60 @@ const HomePage = () => {
     }
   }, [pageState]);
 
+  const isTagFeed = pageState !== "หน้าหลัก";
+
+  const trendingList =
+    trendingBlogs === null ? (
+      <Loader />
+    ) : trendingBlogs.length ? (
+      <div className="tw:divide-y tw:divide-line">
+        {trendingBlogs.map((blog, i) => (
+          <MinimalBlogPost key={blog.blog_id ?? i} blog={blog} index={i} />
+        ))}
+      </div>
+    ) : (
+      <NoDataMessage message="ยังไม่มีบล็อกยอดนิยม" />
+    );
+
   return (
     <AnimationWrapper>
-      <section
-        className="h-cover d-flex justify-content-center"
-        style={{ gap: "2.5rem" }}
-      >
-        <div className="w-100">
-          <InPageNavigation
-            routes={[pageState, "บล็อกยอดนิยม"]}
-            defaultHidden={["บล็อกยอดนิยม"]}
-          >
+      <div className="tw:mx-auto tw:flex tw:min-h-[calc(100vh-4rem)] tw:max-w-6xl tw:gap-12 tw:px-4 tw:py-6 tw:md:px-6">
+        {/* ฟีดบล็อก */}
+        <div className="tw:min-w-0 tw:max-w-2xl tw:flex-1">
+          <FeedHero />
+
+          {/* จอเล็กไม่มีแถบข้าง — แสดงแท็กเป็นแถวเลื่อนด้านบนแทน */}
+          {allTags.length > 0 && (
+            <div className="tw:-mx-4 tw:mb-2 tw:flex tw:gap-2 tw:overflow-x-auto tw:px-4 tw:pb-2 tw:lg:hidden">
+              {allTags.map((tag) => (
+                <Tag key={tag} active={pageState === tag.toLowerCase()} onClick={() => loadBlogBycategory(tag)}>
+                  {tag}
+                </Tag>
+              ))}
+            </div>
+          )}
+
+          <InPageNavigation routes={[isTagFeed ? `#${pageState}` : "ล่าสุด", "ยอดนิยม"]} defaultHidden={["ยอดนิยม"]}>
             <>
               {blogs === null ? (
                 <Loader />
               ) : uniqueBlogs?.result.length ? (
-                uniqueBlogs?.result.map((blog, i) => {
-                  return (
-                    <AnimationWrapper
-                      transition={{ duration: 1, delay: i * 0.1 }}
-                      key={i}
-                    >
-                      <BlogCard content={blog} author={blog.author} />
-                    </AnimationWrapper>
-                  );
-                })
-              ) : (
-                <NoDataMessage message="ไม่มีบล็อกที่เผยแพร่" />
-              )}
-              <LoadMoreDataBtn
-                state={blogs}
-                fetchDataFun={
-                  pageState === "หน้าหลัก"
-                    ? fetchLatestBlogs
-                    : fetchBlogsByCategory
-                }
-              />
-            </>
-            {trendingBlogs === null ? (
-              <Loader />
-            ) : trendingBlogs.length ? (
-              trendingBlogs.map((blog, i) => {
-                return (
-                  <AnimationWrapper
-                    transition={{ duration: 1, delay: i * 0.1 }}
-                    key={i}
-                  >
-                    <MinimalBlogPost blog={blog} index={i} />
+                uniqueBlogs.result.map((blog, i) => (
+                  <AnimationWrapper transition={{ duration: 0.4, delay: Math.min(i, 8) * 0.05 }} key={blog.blog_id ?? i}>
+                    <BlogCard content={blog} author={blog.author} />
                   </AnimationWrapper>
-                );
-              })
-            ) : (
-              <NoDataMessage message="ไม่มีบล็อกที่ติดเทรนด์" />
-            )}
+                ))
+              ) : (
+                <NoDataMessage message={isTagFeed ? `ยังไม่มีบล็อกในแท็ก "${pageState}"` : "ยังไม่มีบล็อกที่เผยแพร่"} />
+              )}
+              <LoadMoreDataBtn state={blogs} fetchDataFun={isTagFeed ? fetchBlogsByCategory : fetchLatestBlogs} />
+            </>
+            {trendingList}
           </InPageNavigation>
         </div>
-        <div
-          className="trending-blog"
-          style={{
-            position: "relative", // ทำให้แน่ใจว่า position ของ container ถูกกำหนด
-            zIndex: 10,
-            top: 0,
-          }}
-        >
-          <div
-            className="d-flex flex-column gap-3 "
-            style={{
-              position: "sticky", // กำหนด sticky ให้แท็ก
-              top: "20px", // ตำแหน่งที่มันจะอยู่เมื่อ scroll
-              zIndex: 10, // ควบคุมชั้นการแสดงผล
-              backgroundColor: "#fff", // เพิ่มพื้นหลังเพื่อไม่ให้เกิดปัญหาการทับซ้อน
-            }}
-          >
-            <div>
-              <h1 className="fw-medium mb-3 fs-5">
-                แท็กยอดนิยม
-                <FaTags
-                  style={{
-                    fontSize: "20px",
-                    marginBottom: "5px",
-                    marginLeft: "7px",
-                  }}
-                />
-              </h1>
 
-              <div
-                className="d-flex gap-3 flex-wrap tag-blogpage"
-                style={{
-                  position: "sticky", // sticky ให้กับแท็ก
-                  top: "60px", // ตำแหน่งที่แท็กจะยึดติด
-                  zIndex: 9,
-                }}
-              >
-                {allTags.map((tag, i) => (
-                  <button
-                    onClick={loadBlogBycategory}
-                    className={pageState === tag ? "tag changeColor" : "tag"}
-                    key={i}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div
-              style={{
-                position: "sticky",
-                top: "100px", // ปรับตำแหน่งของเนื้อหาถัดไป
-                zIndex: 10,
-                backgroundColor: "#fff",
-              }}
-            >
-              <h1
-                className="fw-medium mb-3 fs-5"
-                style={{ position: "sticky", top: "20px", zIndex: "10" }}
-              >
-                บล็อกที่มีคนถูกใจมากที่สุด{" "}
-                <MdAutoGraph
-                  style={{ fontSize: "25px", marginBottom: "5px" }}
-                />
-              </h1>
-
-              {trendingBlogs === null ? (
-                <Loader />
-              ) : trendingBlogs.length ? (
-                trendingBlogs.map((blog, i) => {
-                  return (
-                    <AnimationWrapper
-                      transition={{ duration: 1, delay: i * 0.1 }}
-                      key={i}
-                    >
-                      <MinimalBlogPost blog={blog} index={i} />
-                    </AnimationWrapper>
-                  );
-                })
-              ) : (
-                <NoDataMessage message="ไม่มีบล็อกที่ติดเทรนด์" />
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
+        <FeedSidebar tags={allTags} activeTag={pageState} onTagClick={loadBlogBycategory} trending={trendingList} />
+      </div>
     </AnimationWrapper>
   );
 };

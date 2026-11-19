@@ -63,14 +63,21 @@ const Notifications = () => {
 
   return (
     <div className="notifications">
-      <div className="notifications-icon" onClick={() => setIsOpen(!isOpen)}>
-        <HiChatBubbleLeft className="chat-icon" />
+      {/* ปุ่มเปิดแชท — หน้าตาเดียวกับปุ่มกระดิ่งบน navbar (กล่องแชทยังใช้สไตล์เดิมใน Userchat.css) */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label={unreadNotifications.length ? `ข้อความ ${unreadNotifications.length} รายการที่ยังไม่อ่าน` : "ข้อความ"}
+        aria-expanded={isOpen}
+        className="tw:relative tw:inline-flex tw:size-10 tw:items-center tw:justify-center tw:rounded-full tw:border-0 tw:bg-transparent tw:text-ink-soft tw:transition-colors tw:hover:bg-surface tw:hover:text-ink tw:cursor-pointer"
+      >
+        <HiChatBubbleLeft className="tw:size-5" />
         {unreadNotifications.length > 0 && (
-          <span className="notification-count">
-            <span>{unreadNotifications.length}</span>
+          <span className="tw:absolute tw:right-1.5 tw:top-1.5 tw:flex tw:h-4 tw:min-w-4 tw:items-center tw:justify-center tw:rounded-full tw:bg-red-500 tw:px-1 tw:text-[0.625rem] tw:font-semibold tw:leading-none tw:text-white">
+            {unreadNotifications.length}
           </span>
         )}
-      </div>
+      </button>
       {isOpen && (
         <div className="notifications-box">
           <div className="notifications-header">

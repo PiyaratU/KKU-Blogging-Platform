@@ -6,23 +6,29 @@
  *   เพราะชื่อคลาสของ Tailwind ชนกับ Bootstrap หลายตัว (container, collapse, border, rounded ฯลฯ)
  *   เช่น .collapse ของ Tailwind = visibility: collapse จะทำให้เมนู navbar ของ Bootstrap หาย
  * ไม่โหลด preflight (CSS reset ของ Tailwind) — Bootstrap มี reset ของตัวเองอยู่แล้ว ใส่ซ้ำหน้าเดิมจะเพี้ยน
- * ย้ายออกจาก Bootstrap ครบเมื่อไร ค่อยเปลี่ยนเป็น @import "tailwindcss"; แล้วเอา prefix ออก
+ * คลาส Tailwind เป็น !important — Bootstrap และไฟล์ CSS เดิมใส่กฎกับ element ตรง ๆ (button, a, p, *)
+ *   ซึ่งชนะคลาส Tailwind ที่อยู่ใน @layer เสมอ ถ้าไม่ important หน้าที่ออกแบบใหม่จะถูกทับ
+ * ย้ายออกจาก Bootstrap ครบเมื่อไร ค่อยเปลี่ยนเป็น @import "tailwindcss"; แล้วเอา prefix / important ออก
  */
 @layer theme, base, components, utilities;
 /* @import ต้องอยู่ก่อนกฎอื่นทั้งหมด */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
 @import "tailwindcss/theme.css" layer(theme) prefix(tw);
-@import "tailwindcss/utilities.css" layer(utilities) prefix(tw);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(tw) important;
 
 @theme {
-  /* สีหลักของเว็บ (ม่วง) และสีที่ใช้บ่อยในไฟล์ CSS เดิม */
-  --color-primary: #cb6ce6;
-  --color-primary-soft: #c4b4ec;
+  /* ดีไซน์มินิมอล + พาสเทล: พื้นขาว ตัวหนังสือเข้ม เส้นบาง สีพาสเทลอ่อนเป็นจุดเน้น */
+  --color-primary: #cb6ce6; /* ม่วงของแบรนด์ */
+  --color-primary-strong: #6d3a9c; /* ตัวหนังสือบนพื้นพาสเทล / แท็บที่เลือก (อ่านชัดบนพื้นขาวและพาสเทล) */
+  --color-primary-pastel: #e4d4f7; /* ปุ่มหลัก / แท็กที่เลือก */
+  --color-primary-pastel-hover: #d8c2f2;
+  --color-primary-soft: #f5effc; /* พื้นจาง ๆ เช่น การแจ้งเตือนที่ยังไม่อ่าน */
   --color-accent: #7380ec;
-  --color-ink: #151111;
+  --color-ink: #151111; /* ตัวหนังสือหลัก */
   --color-ink-soft: #494949;
-  --color-surface: #f0f0f0;
-  --color-line: #e0e0e0;
+  --color-muted: #6b6b6b; /* ตัวหนังสือรอง เช่น วันที่ ชื่อผู้เขียน */
+  --color-surface: #f7f7f7; /* พื้นช่องค้นหา / แท็ก */
+  --color-line: #ebebeb; /* เส้นคั่น */
 
   --font-sans: "Kanit", "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-heading: "Kanit", sans-serif;
@@ -76,4 +82,42 @@ input,
 textarea {
   font-family: "Kanit", sans-serif;
   font-weight: 400;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * LEGACY — กฎที่ย้ายมาจากไฟล์ CSS ของแต่ละหน้า เพราะยังมีหลายหน้าใช้อยู่
+ * (ไฟล์ CSS เดิมโหลดทั้งเว็บเสมอ กฎพวกนี้จึงมีผลกับทุกหน้า) — ลบได้เมื่อหน้าที่ใช้ย้ายเป็น Tailwind ครบ
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* จาก misc/inpage.css */
+section {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+.p-4 {
+  text-transform: capitalize;
+}
+.text-black {
+  color: black;
+}
+.text-dark-grey {
+  color: rgb(101, 101, 101);
+}
+@media (min-width: 768px) {
+  section {
+    padding-left: 7vw;
+    padding-right: 7vw;
+  }
+  .md\:hidden {
+    display: none;
+  }
+}
+@media (min-width: 1024px) {
+  section {
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
 }

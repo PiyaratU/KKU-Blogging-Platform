@@ -43,6 +43,7 @@ import ForgotPasswordUser from "./Screens/ForgotPasswordUser";
 import axios from "axios";
 import { API_BASE_URL } from "./api/post";
 import PostStatisticsChart from "./components/stat-component";
+import UiPreview from "./dev/UiPreview";
 import type { UserContextType } from "./types/auth";
 import type { AppUser as User } from "./types/user";
 
@@ -140,6 +141,8 @@ function App() {
               element={<UserAuthForm type="สมัครสมาชิก" />}
             />
             <Route path="/homepage" element={<HomePage />} /> {/* Updated route */}
+            {/* หน้าตัวอย่าง UI ด้วยข้อมูลสมมติ — มีเฉพาะตอน npm run dev */}
+            {import.meta.env.DEV && <Route path="/dev/ui" element={<UiPreview />} />}
             <Route path="/user/:id" element={<ProfilePage />} />
             <Route path="/search/:query" element={<SearchPage />} />
             <Route path="*" element={<PageNotFound />} />
