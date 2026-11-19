@@ -52,6 +52,12 @@ export interface LoadmoreProps {
 // จาก components/nodata.component.tsx
 export interface NoDataMessageProps {
   message: string;
+  /** คำอธิบายใต้ข้อความหลัก */
+  hint?: string;
+  /** ปุ่มชวนทำต่อ เช่น "เขียนบล็อกแรก" */
+  action?: ReactNode;
+  /** แบบเล็ก (ไม่มีไอคอน / กรอบ) — ใช้ในแถบข้าง */
+  compact?: boolean;
 }
 
 // จาก Navbar/Navbar1.tsx

@@ -128,7 +128,7 @@ function Navbar() {
 
   return (
     <header className="tw:sticky tw:top-0 tw:z-40 tw:border-b tw:border-line tw:bg-white/90 tw:backdrop-blur">
-      <nav className="tw:mx-auto tw:flex tw:h-16 tw:max-w-6xl tw:items-center tw:gap-4 tw:px-4 tw:md:px-6">
+      <nav className="tw:mx-auto tw:flex tw:h-16 tw:max-w-7xl tw:items-center tw:gap-4 tw:px-4 tw:md:px-8">
         <Link to="/" className="tw:flex tw:shrink-0 tw:items-center" aria-label="หน้าแรก">
           <img src={logoKKU} alt="KKU Blogging Platform" className="tw:h-8 tw:w-auto" />
         </Link>
@@ -136,7 +136,7 @@ function Navbar() {
         {/* ช่องค้นหา — จอเล็กซ่อนไว้ กดแว่นขยายถึงเปิดเป็นแถบใต้ navbar */}
         <div
           className={cn(
-            "tw:md:static tw:md:block tw:md:w-72 tw:md:p-0 tw:md:border-0",
+            "tw:md:static tw:md:block tw:md:w-80 tw:lg:w-96 tw:md:p-0 tw:md:border-0",
             searchBoxVisibility
               ? "tw:absolute tw:inset-x-0 tw:top-full tw:block tw:border-b tw:border-line tw:bg-white tw:px-4 tw:py-3"
               : "tw:hidden"

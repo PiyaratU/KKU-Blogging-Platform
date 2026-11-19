@@ -1,7 +1,7 @@
 import AnimationWrapper from "./page-animation";
 import InPageNavigation from "../components/Inpage-navigation";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Loader from "../components/loader.component";
 import { Post } from "../types/post";
 import BlogCard from "../components/blogpost.component";
@@ -13,6 +13,9 @@ import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../components/filter-pagination";
 import LoadMoreDataBtn from "../components/load-more.component";
 import Tag from "../components/ui/Tag";
+import { Button, LinkButton } from "../components/ui/Button";
+import { LuFileEdit } from "react-icons/lu";
+import { UserContext } from "../App";
 import type { HomeBlogState as BlogState } from "../types/blog";
 
 const HomePage = () => {
@@ -25,6 +28,9 @@ const HomePage = () => {
   const [trendingBlogs, setTrendingBlogs] = useState<Post[] | null>(null);
   const [pageState, setPageState] = useState("หน้าหลัก");
   const [allTags, setAllTags] = useState<string[]>([]);
+  const {
+    userAuth: { access_token },
+  } = useContext(UserContext);
 
   const getUniqueTags = (posts: Post[]): string[] => {
     const tagCount: Record<string, number> = {};
@@ -202,14 +208,14 @@ const HomePage = () => {
         ))}
       </div>
     ) : (
-      <NoDataMessage message="ยังไม่มีบล็อกยอดนิยม" />
+      <NoDataMessage compact message="ยังไม่มีบล็อกยอดนิยม — บล็อกที่มีคนกดถูกใจจะขึ้นที่นี่" />
     );
 
   return (
     <AnimationWrapper>
-      <div className="tw:mx-auto tw:flex tw:min-h-[calc(100vh-4rem)] tw:max-w-6xl tw:gap-12 tw:px-4 tw:py-6 tw:md:px-6">
+      <div className="tw:mx-auto tw:flex tw:min-h-[calc(100vh-4rem)] tw:max-w-7xl tw:gap-10 tw:px-4 tw:py-6 tw:md:px-8 tw:xl:gap-14">
         {/* ฟีดบล็อก */}
-        <div className="tw:min-w-0 tw:max-w-2xl tw:flex-1">
+        <div className="tw:min-w-0 tw:flex-1">
           <FeedHero />
 
           {/* จอเล็กไม่มีแถบข้าง — แสดงแท็กเป็นแถวเลื่อนด้านบนแทน */}
@@ -233,8 +239,31 @@ const HomePage = () => {
                     <BlogCard content={blog} author={blog.author} />
                   </AnimationWrapper>
                 ))
+              ) : isTagFeed ? (
+                <NoDataMessage
+                  message={`ยังไม่มีบล็อกในแท็ก #${pageState}`}
+                  hint="ลองเลือกแท็กอื่น หรือกลับไปดูบล็อกล่าสุดทั้งหมด"
+                  action={
+                    <Button variant="secondary" onClick={() => loadBlogBycategory(pageState)}>
+                      ดูบล็อกทั้งหมด
+                    </Button>
+                  }
+                />
               ) : (
-                <NoDataMessage message={isTagFeed ? `ยังไม่มีบล็อกในแท็ก "${pageState}"` : "ยังไม่มีบล็อกที่เผยแพร่"} />
+                <NoDataMessage
+                  message="ยังไม่มีบล็อกที่เผยแพร่"
+                  hint="มาเป็นคนแรกที่แบ่งปันเรื่องราว ความรู้ หรือประสบการณ์ให้เพื่อน ๆ ได้อ่าน"
+                  action={
+                    access_token ? (
+                      <LinkButton to="/editor">
+                        <LuFileEdit className="tw:size-4" />
+                        เขียนบล็อกแรก
+                      </LinkButton>
+                    ) : (
+                      <LinkButton to="/signup">สมัครสมาชิกเพื่อเริ่มเขียน</LinkButton>
+                    )
+                  }
+                />
               )}
               <LoadMoreDataBtn state={blogs} fetchDataFun={isTagFeed ? fetchBlogsByCategory : fetchLatestBlogs} />
             </>

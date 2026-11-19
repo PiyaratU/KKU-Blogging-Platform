@@ -42,8 +42,8 @@ const blogs = [0, 1, 2, 3].map(sample);
 const tags = ["เทคโนโลยี", "การเรียน", "ร้านกาแฟ", "ท่องเที่ยว", "การเขียน", "สอบ"];
 
 const UiPreview = () => (
-  <div className="tw:mx-auto tw:flex tw:max-w-6xl tw:gap-12 tw:px-4 tw:py-6 tw:md:px-6">
-    <div className="tw:min-w-0 tw:max-w-2xl tw:flex-1">
+  <div className="tw:mx-auto tw:flex tw:max-w-7xl tw:gap-10 tw:px-4 tw:py-6 tw:md:px-8 tw:xl:gap-14">
+    <div className="tw:min-w-0 tw:flex-1">
       <FeedHero />
       <InPageNavigation routes={["ล่าสุด", "ยอดนิยม"]} defaultHidden={["ยอดนิยม"]}>
         <>
