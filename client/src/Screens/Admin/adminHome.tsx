@@ -40,57 +40,9 @@ import ManageBadwords from "./manage-badwords";
 import GrowthChartAlluser from "./Chart/GrowthChartAlluser";
 import GrowthChartAllblog from "./Chart/GrowthChartAllblog";
 import { useNavigate } from "react-router-dom";
-
-export interface Report {
-  _id: string;
-  reason: string;
-  verified: boolean;
-  status: string;
-  createdAt: string;
-  reportedBy: {
-    _id: string;
-    fullname: string;
-  };
-  post: {
-    _id: string;
-    author: {
-      _id: string;
-      fullname: string;
-      banner: string;
-      profile_picture: string;
-    };
-    content: [
-      {
-        time: number;
-        blocks: [
-          {
-            id: string;
-            type: string;
-            data: {
-              text: string;
-            };
-          }
-        ];
-        version: string;
-      }
-    ];
-    image: string;
-    topic: string;
-    detail: string;
-    tags: string[];
-    banner: string;
-    publishedAt: string;
-    contentWithImages: {
-      content: string;
-      images?: string[];
-    }[];
-  };
-}
-
-interface MonthData {
-  month: string;
-  publishedAt: number;
-}
+import type { Report } from "../../types/admin";
+import type { MonthData } from "../../types/stats";
+export type { Report } from "../../types/admin";
 
 const transformData = (data: any[]): MonthData[] => {
   // Create an array for the months
@@ -123,7 +75,7 @@ const transformData = (data: any[]): MonthData[] => {
 const AdminHome: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { adminId } = useParams<{ adminId: string }>();
-  const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+  const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
   const adminUsername = sessionStorage.getItem("userId");
   const [selectedChart, setSelectedChart] = useState<"user" | "blog">("user");
 

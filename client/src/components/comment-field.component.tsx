@@ -4,13 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { BlogContext } from "../Screens/blog.page";
 import axios from "axios";
 import { API_BASE_URL } from "../api/post";
-
-interface CommentFieldProps {
-  action: string;
-  index?: number;
-  replyingTo?: string;
-  setReplying?: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import type { CommentFieldProps } from "../types/comment";
 
 const CommentField = ({
   action,

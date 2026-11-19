@@ -12,11 +12,7 @@ import { FaEarthAmericas } from "react-icons/fa6";
 
 import { getDay } from "../common/date";
 import { useState } from "react";
-
-interface BlogCardProps {
-  content: Post;
-  author: Author;
-}
+import type { BlogpostBlogCardProps as BlogCardProps } from "../types/blog";
 
 const BlogCard: React.FC<BlogCardProps> = ({ content, author }) => {
   const {

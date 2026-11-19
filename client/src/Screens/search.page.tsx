@@ -14,13 +14,8 @@ import { User } from "../types/user";
 import UserCard from "../components/usercard.component";
 import { LuUser2 } from "react-icons/lu";
 import { Link } from "react-router-dom";
+import type { HomeBlogState as BlogState } from "../types/blog";
 
-
-interface BlogState {
-  result: Post[];
-  totalDocs: number;
-  page: number;
-}
 
 const SearchPage = () => {
   const { query } = useParams();

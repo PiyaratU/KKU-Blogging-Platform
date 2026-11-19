@@ -3,14 +3,7 @@ import { HiChatBubbleLeft } from "react-icons/hi2";
 import { ChatContext } from "../../Screens/ChatContext";
 import "../../misc/Userchat.css";
 import Chat from "../../Screens/chat";
-
-interface Notification {
-  senderId: string;
-  chatId: string;
-  text: string;
-  isRead: boolean;
-  createdAt: string;
-}
+import type { Notification } from "../../types/chat";
 
 const Notifications = () => {
   const [isOpen, setIsOpen] = useState(false);

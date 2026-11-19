@@ -12,16 +12,11 @@ import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../components/filter-pagination";
 import LoadMoreDataBtn from "../components/load-more.component";
 import { FaTags } from "react-icons/fa";
-
-interface BlogState {
-  result: Post[];
-  totalDocs: number;
-  page: number;
-}
+import type { HomeBlogState as BlogState } from "../types/blog";
 
 const HomePage = () => {
   const API_URL =
-    process.env.REACT_APP_API_ENDPOINT ||
+    import.meta.env.REACT_APP_API_ENDPOINT ||
     "https://kku-blog-server-ak2l.onrender.com";
   const [recommend, setRecommend] = useState<BlogState | null>(null);
   const [blogs, setBlogs] = useState<BlogState | null>(null);

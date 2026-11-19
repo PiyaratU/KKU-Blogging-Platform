@@ -52,7 +52,7 @@ const ChangPassword = () => {
         let loadingToast = toast.loading("กำลังอัพเดต...");
 
         axios
-            .post(`${process.env.REACT_APP_API_ENDPOINT}/create-blog/change-password`, formData, {
+            .post(`${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/change-password`, formData, {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }

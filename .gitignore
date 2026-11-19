@@ -1,4 +1,14 @@
 node_modules
 test
 .idea
-client/.env
+.DS_Store
+
+# ผลลัพธ์จากการ build (client ใช้ Vite → client/build)
+client/build
+client/dist
+
+# ค่าตั้งค่า / ข้อมูลลับ — ใช้ไฟล์ .env.example เป็นตัวอย่างแทน
+.env
+.env.*
+!.env.example
+*firebase-adminsdk*.json

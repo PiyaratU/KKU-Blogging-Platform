@@ -1,16 +1,6 @@
 import axios from "axios";
 import { Post } from "../types/post";
-
-interface FilterPaginationDataProps {
-  create_new_arr?: boolean;
-  state?: any;
-  save?: any;  // เพิ่ม property save (ถ้าจำเป็น)
-  data: any[];
-  page?: number;
-  countRoute?: string;
-  data_to_send?: any;
-  user?: string;
-}
+import type { FilterPaginationDataProps } from "../types/ui";
 
 export const filterPaginationData = async ({
   create_new_arr = false,
@@ -36,7 +26,7 @@ export const filterPaginationData = async ({
   } else {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_ENDPOINT}${countRoute}`,
+        `${import.meta.env.REACT_APP_API_ENDPOINT}${countRoute}`,
         data_to_send,
         headers
       );

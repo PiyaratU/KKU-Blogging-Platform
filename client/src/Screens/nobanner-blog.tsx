@@ -1,11 +1,7 @@
 import { Link } from "react-router-dom";
 import { Post } from "../types/post";
 import { getDay } from "../common/date";
-
-interface BlogCardProps {
-  blog: Post;
-  index: number;
-}
+import type { NobannerBlogBlogCardProps as BlogCardProps } from "../types/blog";
 
 const MinimalBlogPost: React.FC<BlogCardProps> = ({ blog, index }) => {
   const { topic, blog_id: id, author, publishedAt } = blog;

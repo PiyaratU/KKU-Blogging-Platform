@@ -22,7 +22,7 @@ const BlogEditor = () => {
   const tagLimit = 10;
 
   const API_URL =
-    process.env.REACT_APP_API_ENDPOINT ||
+    import.meta.env.REACT_APP_API_ENDPOINT ||
     "https://kku-blog-server-ak2l.onrender.com";
   const editorContext = useContext(EditorContext);
   let { blog_id } = useParams();

@@ -6,25 +6,7 @@ import { FaRegCommentDots, FaEdit, FaTrashAlt } from "react-icons/fa";
 import { BlogContext } from "../Screens/blog.page";
 import axios from "axios";
 import { API_BASE_URL } from "../api/post";
-
-interface CommentCardProps {
-  index: number;
-  leftVal: number;
-  commentData: {
-    comment: string;
-    commented_by: {
-      profile_picture: string;
-      fullname: string;
-      username: string;
-      _id?: string;
-    };
-    commentedAt?: string;
-    _id?: string;
-    isReplyingLoaded?: boolean;
-    childrenLevel: number;
-    children?: string[];
-  };
-}
+import type { CommentCardProps } from "../types/comment";
 
 const CommentCard = ({ index, leftVal, commentData }: CommentCardProps) => {
   let {

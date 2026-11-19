@@ -1,9 +1,4 @@
-interface LoadmoreProps {
-  state?: any;
-  fetchDataFun: (params: { page: number; draft: boolean; deleteDocCount: number }) => void;
-  additionalParam?: any;
-}
-
+import type { LoadmoreProps } from "../types/ui";
 const LoadMoreDataBtn: React.FC<LoadmoreProps> = ({
   state,
   fetchDataFun,

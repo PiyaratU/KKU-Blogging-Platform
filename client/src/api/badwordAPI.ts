@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
 const getAuthHeaders = () => {
   const userData = sessionStorage.getItem("user");

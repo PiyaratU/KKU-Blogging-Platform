@@ -4,22 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
 import axios from "axios";
 import PostStatisticsChart from "./stat-component";
-
-interface Blog {
-  _id?:string;
-  banner?: string;
-  blog_id?: string;
-  topic?: string;
-  publishedAt: string;
-  activity?: { [key: string]: number };
-  des?: string;
-  index?: any;
-  setStateFunc?:any;
-}
-
-interface BlogStatsProps {
-  stats: { [key: string]: number };
-}
+import type { ManageBlogcardBlog as Blog, BlogStatsProps, ManagePublishedBlogCardProps, ManageDraftBlogPostProps } from "../types/blog";
 
 const BlogStats: React.FC<BlogStatsProps> = ({ stats }) => {
   return (
@@ -35,10 +20,6 @@ const BlogStats: React.FC<BlogStatsProps> = ({ stats }) => {
     </div>
   );
 };
-
-interface ManagePublishedBlogCardProps {
-  blog: Blog;
-}
 
 export const ManagePublishedBlogCard: React.FC<ManagePublishedBlogCardProps> = ({ blog }) => {
   let { banner, blog_id, topic, publishedAt, activity, _id } = blog;
@@ -100,10 +81,6 @@ export const ManagePublishedBlogCard: React.FC<ManagePublishedBlogCardProps> = (
   );
 };
 
-interface ManageDraftBlogPostProps {
-  blog: Blog;
-}
-
 export const ManageDraftBlogPost: React.FC<ManageDraftBlogPostProps> = ({ blog }) => {
   let { topic, des, blog_id, index } = blog;
   let { userAuth: { access_token } } = useContext(UserContext);
@@ -149,7 +126,7 @@ export const SaveBlog = ({ blog}:any) => {
     const fetchSavedBlogs = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_ENDPOINT}/create-blog/saved-blogsPost`,
+          `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/saved-blogsPost`,
           {
             headers: {
               Authorization: `Bearer ${access_token}`,
@@ -210,7 +187,7 @@ const deleteBlog = (blog: any, access_token: any, target: any) => {
 
   axios
     .post(
-      `${process.env.REACT_APP_API_ENDPOINT}/create-blog/delete-blog`,
+      `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/delete-blog`,
       { blog_id },
       {
         headers: {

@@ -12,7 +12,7 @@ const DeleteAdminAccountModal: React.FC<{
   const [adminPassword, setAdminPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+  const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
   const navigate = useNavigate();
 
   const handleDeleteAccount = async () => {

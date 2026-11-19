@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -5,14 +6,32 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const fs = require("fs");
-const serviceAccountKey = require("./kku-blogging-firebase-adminsdk-blvad-4d6e110e4e.json");
 const cookieParser = require("cookie-parser");
 const admin = require("firebase-admin");
 const { getAuth } = require("firebase-admin/auth");
 const jwt = require("jsonwebtoken");
 const app = express();
-require("dotenv").config();
 const port = process.env.PORT || 3001;
+
+/**
+ * key ของ Firebase Admin (ใช้ตรวจ token ตอนเข้าสู่ระบบด้วย Google) — หาตามลำดับ
+ *   1. FIREBASE_SERVICE_ACCOUNT       = เนื้อหาไฟล์ JSON ทั้งก้อน (เหมาะกับ Vercel / Render ที่วางไฟล์ไม่ได้)
+ *   2. FIREBASE_SERVICE_ACCOUNT_PATH  = path ของไฟล์ JSON
+ *   3. ไฟล์ชื่อเดิมในโฟลเดอร์ server
+ * ไม่เจอเลย = server ยังรันได้ แต่ /google-auth จะตอบ 503
+ */
+const loadFirebaseServiceAccount = () => {
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+        return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    }
+    const keyPath = path.resolve(
+        __dirname,
+        process.env.FIREBASE_SERVICE_ACCOUNT_PATH || "kku-blogging-firebase-adminsdk-blvad-4d6e110e4e.json"
+    );
+    return fs.existsSync(keyPath) ? JSON.parse(fs.readFileSync(keyPath, "utf8")) : null;
+};
+const serviceAccountKey = loadFirebaseServiceAccount();
+const firebaseReady = Boolean(serviceAccountKey);
 const uri = process.env.ATLAS_URI;
 
 app.use(bodyParser.json({ limit: "10mb" }));
@@ -26,9 +45,13 @@ app.use(
     })
 );
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccountKey)
-});
+if (firebaseReady) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccountKey)
+    });
+} else {
+    console.warn("[firebase] ไม่พบ key ของ Firebase Admin — ปิดการเข้าสู่ระบบด้วย Google (ดู server/.env.example)");
+}
 app.use(cookieParser());
 app.use(express.json());
 
@@ -120,6 +143,10 @@ app.post("/google-auth", async (req, res) => {
 
     if (!access_token) {
         return res.status(400).json({ error: "Token is required" });
+    }
+
+    if (!firebaseReady) {
+        return res.status(503).json({ error: "ยังไม่ได้ตั้งค่า Firebase บน server จึงเข้าสู่ระบบด้วย Google ไม่ได้" });
     }
 
     try {

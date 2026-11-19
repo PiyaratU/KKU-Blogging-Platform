@@ -5,32 +5,7 @@ import NotificationCommentField from "./notification-content-field";
 import "../misc/blogpage.css";
 import { UserContext } from "../App";
 import axios from "axios";
-
-interface NotificationCardProps {
-  data: {
-    seen?: any;
-    type?: string;
-    reply?: any;
-    comment?: any;
-    replied_on_comment?: any;
-    createdAt?: string;
-    reason?: string;
-    user?: {
-      fullname: string;
-      username: string;
-      profile_picture: string;
-      _id: string;
-    };
-    blog?: {
-      _id: string;
-      blog_id: string;
-      topic: string;
-    } | null;
-    _id?: string;
-  };
-  index?: number;
-  notificationState?: any;
-}
+import type { NotificationCardProps } from "../types/notification";
 
 const NotificationCard: React.FC<NotificationCardProps> = ({
   data,
@@ -84,7 +59,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
 
     axios
       .post(
-        `${process.env.REACT_APP_API_ENDPOINT}/create-blog/delete-comment`,
+        `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/delete-comment`,
         { _id: comment_id },
         {
           headers: {

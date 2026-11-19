@@ -1,3 +1,5 @@
+import type React from "react";
+
 import { Author } from "./post";
 
 export type ReplyComment = {
@@ -24,3 +26,31 @@ export type Comment = {
 export type CommentsData = {
   results: Comment[]; // ผลลัพธ์ของความคิดเห็น
 };
+
+// จาก components/comment-field.component.tsx
+export interface CommentFieldProps {
+  action: string;
+  index?: number;
+  replyingTo?: string;
+  setReplying?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+// จาก components/commentcard.component.tsx
+export interface CommentCardProps {
+  index: number;
+  leftVal: number;
+  commentData: {
+    comment: string;
+    commented_by: {
+      profile_picture: string;
+      fullname: string;
+      username: string;
+      _id?: string;
+    };
+    commentedAt?: string;
+    _id?: string;
+    isReplyingLoaded?: boolean;
+    childrenLevel: number;
+    children?: string[];
+  };
+}

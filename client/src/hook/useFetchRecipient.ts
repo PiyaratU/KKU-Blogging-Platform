@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
 import { API_BASE_URL, getRequest } from "../api/chat";
-
-interface Chat {
-  _id: string;
-  members: string[];
-}
-
-interface User {
-  _id: string;
-  username: string;
-  profile_picture: string;
-}
+import type { UseFetchRecipientChat as Chat, UseFetchRecipientUser as User } from "../types/chat";
 
 export const useFetchRecipientUser = (chat: Chat | null, userId: string | null) => {
   const [recipientUser, setRecipientUser] = useState<User | null>(null);

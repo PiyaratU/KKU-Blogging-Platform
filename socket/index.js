@@ -1,7 +1,8 @@
 const { Server } = require("socket.io");
 
 const initializeSocket = () => {
-  const io = new Server(3002, {
+  // Render / โฮสต์อื่นกำหนดพอร์ตผ่าน PORT · รันในเครื่องใช้ 3002 (ตรงกับ REACT_APP_SOCKET_ENDPOINT)
+  const io = new Server(Number(process.env.PORT) || 3002, {
     cors: {
       origin: ["https://kku-client.vercel.app", "http://localhost:3000","https://www.kkublogging.com","https://kkublogging.com"],
       methods: ["GET", "POST"],

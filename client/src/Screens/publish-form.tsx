@@ -17,7 +17,7 @@ const PublishForm = () => {
   const characterLimit = 200;
   const tagLimit = 10;
   const context = useContext(EditorContext);
-  const API_URL = process.env.REACT_APP_API_ENDPOINT || "https://kku-blog-server-ak2l.onrender.com";
+  const API_URL = import.meta.env.REACT_APP_API_ENDPOINT || "https://kku-blog-server-ak2l.onrender.com";
   
   let {
     userAuth: { access_token },

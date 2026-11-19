@@ -1,14 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "../Screens/ChatContext";
 import { API_BASE_URL, getRequest } from "../api/chat";
-
-interface Message {
-  chatId: string;
-  senderId: string;
-  text: string;
-  createdAt: string;
-  deletedBy?: { [userId: string]: boolean };
-}
+import type { Message } from "../types/chat";
 
 export const useFetchLatestMessages = (chat: { _id: string }) => {
   const { newMessage, notifications, userId } = useContext(ChatContext); // Add userId here

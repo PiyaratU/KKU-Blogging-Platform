@@ -8,11 +8,7 @@ import axios from "axios";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Import eye icons
 import DeleteAccountModal from "../DeleteAccount-confirm";
 import DeleteAdminAccountModal from "./adminDelete-account";
-
-interface UserProps {
-  users: any[];
-  allUsers: any[];
-}
+import type { UserProps } from "../../types/admin";
 
 const ManageUser: React.FC<UserProps> = ({ users, allUsers }) => {
   const { id } = useParams<{ id: string }>();
@@ -29,7 +25,7 @@ const ManageUser: React.FC<UserProps> = ({ users, allUsers }) => {
   }>({});
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+  const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
   const navigate = useNavigate();
 
   const handleEditUser = (user: any) => {

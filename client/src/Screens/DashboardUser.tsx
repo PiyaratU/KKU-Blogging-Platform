@@ -5,30 +5,10 @@ import { IoHeart } from "react-icons/io5";
 import { FaCommentDots } from "react-icons/fa";
 import { fetchBlogById, fetchViews } from "../api/adminProfile";
 import { Dropdown } from "react-bootstrap";
+import type { ViewData, MonthlyViewCount, YearlyViewCount } from "../types/stats";
 
 // กำหนดประเภทข้อมูลสำหรับโครงสร้างข้อมูลการเข้าชม
-interface ViewData {
-  _id: string;
-  month: string;
-  year: number;
-  blog: string;
-  __v: number;
-  createdAt: string;
-  total_reads: number;
-  updatedAt: string;
-}
-
 // กำหนดประเภทข้อมูลสำหรับการนับการเข้าชมรายเดือนและรายปี
-interface MonthlyViewCount {
-  month: string;
-  viewCount: number;
-}
-
-interface YearlyViewCount {
-  year: string;
-  viewCount: number;
-}
-
 // ฟังก์ชันเพื่อคำนวณการนับการเข้าชมรายเดือนจากข้อมูลที่ดึงมา
 const getMonthlyViewCounts = (data: ViewData[]): MonthlyViewCount[] => {
   const months = [

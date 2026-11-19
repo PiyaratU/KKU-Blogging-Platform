@@ -22,25 +22,7 @@ import {
 } from "../components/manage-blogcard.component";
 import LoadMoreDataBtn from "../components/load-more.component";
 import { useSearchParams } from "react-router-dom";
-
-interface GetBlogsParams {
-  page: number;
-  draft: boolean;
-  deleteDocCount?: number;
-}
-
-interface Blog {
-  blog_id: string;
-  topic: string;
-  publishedAt: string;
-  activity: { [key: string]: number };
-  des?: string;
-}
-
-interface BlogsResponse {
-  result: Blog[];
-  deleteDocCount: number;
-}
+import type { GetBlogsParams, ManageblogsBlog as Blog, BlogsResponse } from "../types/blog";
 
 const ManageBlogs = () => {
   const [blogs, setBlogs] = useState<BlogsResponse | null>(null);
@@ -57,7 +39,7 @@ const ManageBlogs = () => {
   const getBlogs = ({ page, draft, deleteDocCount = 0 }: GetBlogsParams) => {
     axios
       .post(
-        `${process.env.REACT_APP_API_ENDPOINT}/create-blog/user-written-blog`,
+        `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/user-written-blog`,
         {
           page,
           draft,

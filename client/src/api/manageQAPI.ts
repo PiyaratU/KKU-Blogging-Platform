@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
 // Function to fetch all questions (ไม่ต้องล็อกอิน)
 export const fetchQuestionsAPI = async () => {

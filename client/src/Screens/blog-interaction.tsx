@@ -142,7 +142,7 @@ const BlogInteraction = () => {
     if (access_token) {
       axios
         .post(
-          `${process.env.REACT_APP_API_ENDPOINT}/create-blog/isliked-by-user`,
+          `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/isliked-by-user`,
           { _id },
           {
             headers: {
@@ -158,7 +158,7 @@ const BlogInteraction = () => {
         });
       // ตรวจสอบสถานะการบันทึก (saved-blogs)
       axios
-        .get(`${process.env.REACT_APP_API_ENDPOINT}/create-blog/saved-blogs`, {
+        .get(`${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/saved-blogs`, {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
@@ -190,7 +190,7 @@ const BlogInteraction = () => {
 
       axios
         .post(
-          `${process.env.REACT_APP_API_ENDPOINT}/create-blog/like-blog`,
+          `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/like-blog`,
           {
             _id,
             islikedByUser,
@@ -229,7 +229,7 @@ const BlogInteraction = () => {
 
       axios
         .post(
-          `${process.env.REACT_APP_API_ENDPOINT}/create-blog/save-blog`,
+          `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/save-blog`,
           {
             _id,
             issavedByUser,

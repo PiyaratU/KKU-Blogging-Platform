@@ -5,18 +5,8 @@ import { MdOutlineMail } from "react-icons/md";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { useState } from "react";
 import { IoEyeOutline } from "react-icons/io5";
+import type { InputBoxProps } from "../types/ui";
 
-interface InputBoxProps {
-  name: string;
-  type: string;
-  id?: string;
-  value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-  icon?: string;
-  className?: string;
-  disabled?: boolean;
-}
 const iconMap: { [key: string]: React.ElementType } = {
   FaUser: FaUser,
   MdOutlineMail: MdOutlineMail,

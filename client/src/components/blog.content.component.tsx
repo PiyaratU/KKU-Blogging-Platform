@@ -1,37 +1,5 @@
 import React from "react"
-
-interface Block {
-  type: string
-  data: {
-    text?: string
-    level?: number
-    file?: {
-      url: string
-    }
-    caption?: string
-    style?: string
-    items?: string[]
-  }
-}
-
-interface BlogContentProps {
-  block: Block
-}
-
-interface ImgProps {
-  url: string
-  caption: string
-}
-
-interface QuoteProps {
-  quote: string
-  caption: string
-}
-
-interface ListProps {
-  style: "ordered" | "unordered"
-  items: string[]
-}
+import type { Block, BlogContentProps, ImgProps, QuoteProps, ListProps } from "../types/blog";
 
 const Img: React.FC<ImgProps> = ({ url, caption }) => {
   return (

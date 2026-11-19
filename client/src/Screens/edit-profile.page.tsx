@@ -37,7 +37,7 @@ const EditProfile = () => {
   useEffect(() => {
     if (access_token) {
       axios
-        .get(`${process.env.REACT_APP_API_ENDPOINT}/profile/${userId}`)
+        .get(`${import.meta.env.REACT_APP_API_ENDPOINT}/profile/${userId}`)
         .then(({ data }) => {
           setProfile(data);
           setLoading(false);
@@ -73,7 +73,7 @@ const EditProfile = () => {
           if (url) {
             axios
               .post(
-                `${process.env.REACT_APP_API_ENDPOINT}/users/update-profile-img`,
+                `${import.meta.env.REACT_APP_API_ENDPOINT}/users/update-profile-img`,
                 { url },
                 {
                   headers: {
@@ -156,7 +156,7 @@ const EditProfile = () => {
 
     axios
       .post(
-        `${process.env.REACT_APP_API_ENDPOINT}/users/update-profile`,
+        `${import.meta.env.REACT_APP_API_ENDPOINT}/users/update-profile`,
         {
           fullname,
           bio,

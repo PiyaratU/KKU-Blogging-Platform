@@ -9,14 +9,11 @@ import {
   userInSession,
   userIdInSession,
 } from "../../common/session";
-
-interface LoginPageProps {
-  type: string;
-}
+import type { LoginPageProps } from "../../types/auth";
 
 const Login: React.FC<LoginPageProps> = ({ type }) => {
   const authForm = useRef<HTMLFormElement>(null);
-  const API_URL = process.env.REACT_APP_API_ENDPOINT;
+  const API_URL = import.meta.env.REACT_APP_API_ENDPOINT;
   const navigate = useNavigate();
 
   const {

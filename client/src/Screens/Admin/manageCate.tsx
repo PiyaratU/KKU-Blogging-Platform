@@ -3,35 +3,7 @@ import { useParams } from "react-router-dom";
 import { MdCategory } from "react-icons/md";
 import { Modal, Button } from "react-bootstrap";
 import { fetchAllUser } from "../../api/adminProfile";
-
-interface Blog {
-  _id: string;
-  blog_id: string;
-  topic: string;
-  banner: string;
-  des: string;
-  content: Array<{
-    time: number;
-    blocks: Array<{
-      id: string;
-      type: string;
-      data: {
-        text: string;
-      };
-    }>;
-    version: string;
-  }>;
-  tags: string[];
-  author: string;
-  comments: any[];
-  draft: boolean;
-  likes: any[];
-  saves: any[];
-  views: number;
-  publishedAt: string;
-  updatedAt: string;
-  __v: number;
-}
+import type { ManageCateBlog as Blog } from "../../types/blog";
 
 const ManageCate: React.FC<{ blogsData: Blog[] }> = ({ blogsData }) => {
   const { id } = useParams<{ id: string }>();
@@ -81,7 +53,7 @@ const ManageCate: React.FC<{ blogsData: Blog[] }> = ({ blogsData }) => {
   const handleEditTag = async () => {
     if (selectedTag) {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/create-blog/edit-tag`, {
+        const response = await fetch(`${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/edit-tag`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -104,7 +76,7 @@ const ManageCate: React.FC<{ blogsData: Blog[] }> = ({ blogsData }) => {
     if (selectedTag) {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_API_ENDPOINT}/create-blog/deletetag`,
+          `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/deletetag`,
           {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },

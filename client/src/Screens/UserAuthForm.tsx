@@ -8,15 +8,12 @@ import { Toaster, toast } from "react-hot-toast";
 import { storeInSession, userInSession } from "../common/session";
 import { UserContext } from "../App";
 import { authWithGoogle } from "../common/firebase";
-
-interface LoginPageProps {
-  type: string;
-}
+import type { LoginPageProps } from "../types/auth";
 
 const UserAuthForm: React.FC<LoginPageProps> = ({ type }) => {
   const authForm = useRef<HTMLFormElement>(null);
   const API_URL =
-    process.env.REACT_APP_API_ENDPOINT ||
+    import.meta.env.REACT_APP_API_ENDPOINT ||
     "https://kku-blog-server-ak2l.onrender.com";
 
   const {

@@ -1,13 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
+import type { AnimationWrapperProps } from "../types/ui";
 
-interface AnimationWrapperProps {
-  children: React.ReactNode;
-  keyValue?: string | number;
-  initial?: { [key: string]: any };
-  animate?: { [key: string]: any };
-  transition?: { duration?: number; delay?: number };
-  className?: string;
-}
 const AnimationWrapper: React.FC<AnimationWrapperProps> = ({
   children,
   keyValue,

@@ -7,17 +7,7 @@ import AnimationWrapper from "./page-animation";
 import NoDataMessage from "../components/nodata.component";
 import NotificationCard from "../components/notification-card.component";
 import LoadMoreDataBtn from "../components/load-more.component";
-
-interface NotificationData {
-  id: string;
-  type: string;
-  createdAt: string;
-}
-
-interface NotificationsResponse {
-  result: NotificationData[];
-  deletedDoccount?: number;
-}
+import type { NotificationData, NotificationsResponse } from "../types/notification";
 
 const Notification = () => {
   let {
@@ -37,7 +27,7 @@ const Notification = () => {
   }) => {
     axios
       .post(
-        `${process.env.REACT_APP_API_ENDPOINT}/notifications/notifications`,
+        `${import.meta.env.REACT_APP_API_ENDPOINT}/notifications/notifications`,
         { page,  filter: filter !== "system" ? filter : "delete", deletedDoccount },
         {
           headers: {

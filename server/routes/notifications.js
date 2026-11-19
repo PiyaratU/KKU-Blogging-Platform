@@ -43,12 +43,7 @@ router.get("/:id", async (req, res) => {
       .populate("reason")
       .exec();
 
-    if (!userNotifications.length) {
-      return res
-        .status(404)
-        .json({ message: "No notifications found for this user" });
-    }
-
+    // ยังไม่มีการแจ้งเตือน = รายการว่าง (200 []) ไม่ใช่ 404 — หน้าเว็บดึงทุก 5 วินาที 404 จะขึ้น error ใน console ไม่หยุด
     res.json(userNotifications);
   } catch (error) {
     console.error("Error fetching notifications:", error);

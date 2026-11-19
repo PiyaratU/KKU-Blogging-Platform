@@ -9,24 +9,7 @@ import moment from "moment";
 import { TbDotsVertical } from "react-icons/tb";
 import { MdDelete } from "react-icons/md";
 import "../../misc/Userchat.css";
-
-interface Chat {
-  _id: string;
-  members: string[];
-}
-
-interface UserchatProps {
-  chat: Chat;
-  userId: string;
-}
-
-interface Notification {
-  senderId: string;
-  chatId: string;
-  text: string;
-  isRead: boolean;
-  createdAt: string;
-}
+import type { UseFetchRecipientChat as Chat, UserchatProps, Notification } from "../../types/chat";
 
 const Userchat: React.FC<UserchatProps> = ({ chat, userId }) => {
   const { recipientUser, error } = useFetchRecipientUser(chat, userId);

@@ -38,7 +38,7 @@ const NotificationCommentField = ({
 
     axios
       .post(
-        `${process.env.REACT_APP_API_ENDPOINT}/create-blog/add-comment`,
+        `${import.meta.env.REACT_APP_API_ENDPOINT}/create-blog/add-comment`,
         {
           _id,
           blog_author: user_id,

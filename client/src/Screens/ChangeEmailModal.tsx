@@ -1,12 +1,6 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
-
-interface ChangeEmailModalProps {
-  show: boolean;
-  onClose: () => void;
-  onSave: (email: string) => void;
-  oldEmail: string;
-}
+import type { ChangeEmailModalProps } from "../types/auth";
 
 const ChangeEmailModal: React.FC<ChangeEmailModalProps> = ({
   show,

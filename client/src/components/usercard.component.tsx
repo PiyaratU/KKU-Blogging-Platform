@@ -1,10 +1,7 @@
 import { Link } from "react-router-dom";
 import { User } from "../types/user";
 import React from "react";
-
-interface UserCardProps {
-  user: User;
-}
+import type { UserCardProps } from "../types/user";
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
   let { fullname, profile_picture, username, _id } = user;

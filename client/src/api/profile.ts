@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
 export const fetchUserProfile = async (id: string): Promise<any> => {
   if (!id) {
@@ -64,7 +64,7 @@ export const fetchPostsByUser = async (userId: string) => {
 export const fetchLikedPosts = async (userId: string) => {
   try {
     const response = await fetch(
-      `${process.env.REACT_APP_API_ENDPOINT}/posts/likedPosts/${userId}`
+      `${import.meta.env.REACT_APP_API_ENDPOINT}/posts/likedPosts/${userId}`
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

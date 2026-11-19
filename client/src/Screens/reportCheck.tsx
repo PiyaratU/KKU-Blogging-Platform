@@ -1,56 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ReportDetailsModal from "../components/report-view-modal";
-import ConfirmCancelModal from "../components/ConfirmCancelModal"; // Import the confirmation modal
-
-export interface Report {
-  _id: string;
-  reason: string;
-  verified: boolean;
-  status: string;
-  createdAt: string;
-  reportedBy: {
-    _id: string;
-    fullname: string;
-  };
-  post: {
-    _id: string;
-    author: {
-      _id: string;
-      fullname: string;
-      banner: string;
-      profile_picture: string;
-    };
-    content: [
-      {
-        time: number;
-        blocks: [
-          {
-            id: string;
-            type: string;
-            data: {
-              text: string;
-            };
-          }
-        ];
-        version: string;
-      }
-    ];
-    image: string;
-    topic: string;
-    detail: string;
-    tags: string[];
-    banner: string;
-    publishedAt: string;
-    contentWithImages: {
-      content: string;
-      images?: string[];
-    }[];
-  };
-}
+import ConfirmCancelModal from "../components/ConfirmCancelModal";
+import type { Report } from "../types/admin";
+export type { Report } from "../types/admin"; // Import the confirmation modal
 
 const ReportCheck: React.FC = () => {
-  const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+  const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
   const [reports, setReports] = useState<Report[]>([]);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [showModal, setShowModal] = useState(false);

@@ -1,13 +1,15 @@
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../common/firebase";
-import * as nsfwjs from 'nsfwjs';
+import * as nsfwjs from "nsfwjs";
+import type { Prediction } from "../types/blog";
 
-interface Prediction {
-  className: string;
-  probability: number;
-}
+/**
+ * อัปโหลดรูปไปเก็บที่ Cloudinary (ฟรี ไม่ต้องผูกบัตร) — แทน Firebase Storage ที่ต้องใช้แผน Blaze
+ * ใช้ "unsigned upload preset" ฝั่งหน้าเว็บจึงไม่ต้องมี API secret
+ * ตั้งค่าใน client/.env: REACT_APP_CLOUDINARY_CLOUD_NAME, REACT_APP_CLOUDINARY_UPLOAD_PRESET
+ */
+const CLOUD_NAME = import.meta.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET;
 
-async function ImageNSFWProcessing(file:File) {
+async function ImageNSFWProcessing(file: File) {
   try {
     const model = await nsfwjs.load();
 
@@ -20,11 +22,12 @@ async function ImageNSFWProcessing(file:File) {
           const badImages: Prediction[] = [];
           const predictions = await model.classify(img);
 
-          const filteredPredictions = predictions.filter((obj) =>
-            (obj.className === "Hentai" && obj.probability > 0.40) || 
-            (obj.className === "Sexy" && obj.probability > 0.90) ||
-            (obj.className === "Porn" && obj.probability > 0.50)
-          );          
+          const filteredPredictions = predictions.filter(
+            (obj) =>
+              (obj.className === "Hentai" && obj.probability > 0.4) ||
+              (obj.className === "Sexy" && obj.probability > 0.9) ||
+              (obj.className === "Porn" && obj.probability > 0.5)
+          );
 
           filteredPredictions.forEach((obj) => {
             badImages.push(obj);
@@ -33,42 +36,53 @@ async function ImageNSFWProcessing(file:File) {
 
           if (badImages.length > 0) {
             reject(new Error("Not accept NSFW Content"));
+            return;
           }
-          // reject(new Error("Pass Test")); // only for testing
           resolve(file);
         } catch (error) {
           reject(error);
         }
       };
 
-      img.onerror = (error) => {
+      img.onerror = () => {
         reject(new Error("Image loading failed"));
       };
     });
   } catch (error) {
-    console.error('Error loading NSFW model:', error);
+    console.error("Error loading NSFW model:", error);
   }
+}
+
+/** ส่งไฟล์ไป Cloudinary แล้วคืน URL (https) ของรูปสำหรับบันทึกในฐานข้อมูล */
+async function uploadToCloudinary(file: File, folder: string): Promise<string> {
+  if (!CLOUD_NAME || !UPLOAD_PRESET) {
+    throw new Error(
+      "ยังไม่ได้ตั้งค่า Cloudinary — ใส่ REACT_APP_CLOUDINARY_CLOUD_NAME และ REACT_APP_CLOUDINARY_UPLOAD_PRESET ใน client/.env"
+    );
+  }
+
+  const form = new FormData();
+  form.append("file", file);
+  form.append("upload_preset", UPLOAD_PRESET);
+  form.append("folder", folder);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+    method: "POST",
+    body: form,
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(`อัปโหลดรูปไม่สำเร็จ: ${data?.error?.message ?? res.status}`);
+  }
+  return data.secure_url as string;
 }
 
 export const uploadProfileImage = async (file: File): Promise<string> => {
   await ImageNSFWProcessing(file);
-
-  const storageRef = ref(storage, `profile-images/${file.name}`);
-  await uploadBytes(storageRef, file);
-  const downloadURL = await getDownloadURL(storageRef);
-  return downloadURL; // URL สำหรับบันทึกในฐานข้อมูล
+  return uploadToCloudinary(file, "kku-blogging/profile-images");
 };
 
 export const uploadImage = async (file: File): Promise<string> => {
   await ImageNSFWProcessing(file);
-
-  const timestamp = Date.now();
-  const fileName = `${timestamp}-${file.name}`;
-  const storageRef = ref(storage, `images/${fileName}`);
-
-  // อัปโหลดไฟล์
-  await uploadBytes(storageRef, file);
-
-  const downloadURL = await getDownloadURL(storageRef);
-  return downloadURL;
+  return uploadToCloudinary(file, "kku-blogging/images");
 };

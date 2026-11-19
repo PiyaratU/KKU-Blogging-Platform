@@ -5,22 +5,17 @@ import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import { getDay } from "../common/date";
 import { Report } from "../Screens/Admin/adminHome";
-
-interface ReportDetailsModalProps {
-  showModal: boolean;
-  handleClose: () => void;
-  report: Report | null;
-  refreshReports: () => void;
-}
+import type { ReportDetailsModalProps } from "../types/admin";
 
 const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
   showModal,
   handleClose,
   report,
-  refreshReports
+  refreshReports,
+  showVerifyActions = false,
 }) => {
   const navigate = useNavigate();
-  const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+  const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
   const verifyReport = async (
     reportId: string,
@@ -161,6 +156,24 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
           </div>
         </div>
       </Modal.Body>
+
+      {/* ผู้ดูแลระบบ (หน้า adminHome) ตัดสินรายงานได้ — ผู้ใช้ทั่วไปดูอย่างเดียว */}
+      {showVerifyActions && (
+        <Modal.Footer>
+          <Button
+            style={{ backgroundColor: "#7380ec", borderColor: "#7380ec", color: "white" }}
+            onClick={() => handleVerification(true)}
+          >
+            อนุญาติให้บล็อกอยู่บนเว็บต่อ
+          </Button>
+          <Button variant="danger" onClick={() => handleVerification(false)}>
+            ลบบล็อก
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            ปิด
+          </Button>
+        </Modal.Footer>
+      )}
     </Modal>
   );
 };

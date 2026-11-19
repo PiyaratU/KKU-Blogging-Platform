@@ -24,7 +24,7 @@ function Navbar() {
   const userId = sessionStorage.getItem("userId");
 
   const [notifications, setNotifications] = useState<any[]>([]);
-  const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+  const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
   const notiPanelRef = useRef<HTMLDivElement>(null);
 

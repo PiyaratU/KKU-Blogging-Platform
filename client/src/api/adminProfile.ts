@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
 export const fetchAdminProfile = async (id: string): Promise<any> => {
   if (!id) {
@@ -58,7 +58,7 @@ export const fetchUser = async () => {
     console.error("No token found, redirecting to login...");
     return;
   }
-  const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/profile`, {
+  const response = await fetch(`${import.meta.env.REACT_APP_API_ENDPOINT}/profile`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export const fetchViews = async () => {
     console.error("No token found, redirecting to login...");
     return;
   }
-  const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/views`, {
+  const response = await fetch(`${import.meta.env.REACT_APP_API_ENDPOINT}/views`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export const fetchUsersAPI = async () => {
     return;
   }
 
-  const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/admin/users`, {
+  const response = await fetch(`${import.meta.env.REACT_APP_API_ENDPOINT}/admin/users`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -125,7 +125,7 @@ export const fetchAllUser = async () => {
     return;
   }
 
-  const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/admin/viewer`, {
+  const response = await fetch(`${import.meta.env.REACT_APP_API_ENDPOINT}/admin/viewer`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -148,7 +148,7 @@ export const fetchAllBlog = async () => {
   }
 
   const response = await fetch(
-    `${process.env.REACT_APP_API_ENDPOINT}/admin/blogs/within24hour`,
+    `${import.meta.env.REACT_APP_API_ENDPOINT}/admin/blogs/within24hour`,
     {
       method: "GET",
       headers: {
@@ -171,7 +171,7 @@ export const fetchBlogById = async (userId: string | null) => {
     console.error("No token found, redirecting to login...");
     return;
   }
-  const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/admin/blogs/${userId}`, {
+  const response = await fetch(`${import.meta.env.REACT_APP_API_ENDPOINT}/admin/blogs/${userId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

@@ -10,79 +10,7 @@ import {
 import { getRequest, API_BASE_URL, postRequest } from "../api/chat";
 import { io, Socket } from "socket.io-client";
 import ChatBox from "../Navbar/chat/ChatBox";
-
-interface User {
-  _id: string;
-  firstname: string;
-  profile_picture?: string;
-}
-
-interface Chat {
-  _id: string;
-  members: string[];
-  deletedBy?: Map<string, boolean>;
-  messages: Message[];
-}
-
-interface Message {
-  chatId: string;
-  senderId: string;
-  text: string;
-  createdAt: string;
-  deletedBy?: { [userId: string]: boolean };
-}
-
-interface Notification {
-  senderId: string;
-  chatId: string;
-  text: string;
-  isRead: boolean;
-  createdAt: string;
-}
-
-interface ChatContextProps {
-  userChats: Chat[];
-  isUserChatsLoading: boolean;
-  UserChatsError: any;
-  userId: string | null;
-  potentialChats: User[];
-  createChat: (firstId: string, secondId: string) => Promise<void>;
-  updateCurrentChat: (chat: Chat) => void;
-  currentChat: Chat | null;
-  messages: any[];
-  isMessagesLoading: boolean;
-  messagesError: any;
-  sendTextMessage: (
-    textMessage: string,
-    sender: User,
-    currentChatId: string,
-    setTextMessage: Dispatch<SetStateAction<string>>
-  ) => Promise<void>;
-  onlineUsers: any[];
-  notifications: Notification[];
-  allUsers: User[];
-  markAllNotificationsAsRead: (notifications: Notification[]) => void;
-  markNotificationAsRead: (
-    n: Notification,
-    userChats: Chat[],
-    user: User,
-    notifications: Notification[]
-  ) => void;
-  toggleChatBox: () => void;
-  markThisUserNotificationsAsRead: (
-    thisUserNotifications: Notification[],
-    notifications: Notification[]
-  ) => void;
-  newMessage: Message | null;
-  isChatBoxOpen: boolean;
-  setIsChatBoxOpen: (isOpen: boolean) => void;
-  deleteChat: (chatId: string, userId: string) => Promise<void>;
-  getUserChats: () => void;
-}
-
-interface ChatContextProviderProps {
-  children: ReactNode;
-}
+import type { ChatContextUser as User, ChatContextChat as Chat, Message, Notification, ChatContextProps, ChatContextProviderProps } from "../types/chat";
 
 const defaultChatContext: ChatContextProps = {
   userChats: [],
@@ -144,7 +72,7 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
 
   useEffect(() => {
     const newSocket = io(
-      process.env.SOCKET_ENDPOINT || "https://kku-socket.onrender.com"
+      import.meta.env.REACT_APP_SOCKET_ENDPOINT || "https://kku-socket.onrender.com"
       // "https://kku-blog-server-ak2l.onrender.com" ||
       // "https://kku-for-deploy.onrender.com"
     );

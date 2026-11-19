@@ -2,13 +2,7 @@ import { Link } from "react-router-dom";
 import "../misc/edit-profile.css";
 import React from "react";
 import { getFullday } from "../common/date";
-
-interface AboutUserProps {
-  className?: string;
-  bio: string; // bio เป็น string
-  social_links: { [key: string]: string } | null;
-  joinedAt: string;
-}
+import type { AboutUserProps } from "../types/user";
 
 const AboutUser: React.FC<AboutUserProps> = ({
   className,

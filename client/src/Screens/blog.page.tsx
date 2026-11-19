@@ -25,19 +25,7 @@ import CommentsContainer, {
 } from "../components/comments.components";
 import toast from "react-hot-toast";
 import { BsDot } from "react-icons/bs";
-
-interface BlogContextType {
-  blog: Partial<Post>;
-  setBlog: Dispatch<SetStateAction<Partial<Post>>>;
-  islikedByUser: boolean;
-  setLikeByUser: React.Dispatch<React.SetStateAction<boolean>>;
-  issavedByUser: boolean;
-  setSaveByUser: React.Dispatch<React.SetStateAction<boolean>>;
-  commentWrapper: boolean;
-  setCommentWrapper: React.Dispatch<React.SetStateAction<boolean>>;
-  totalParentCommentsLoaded: number;
-  setTotalParentCommentsLoaded: React.Dispatch<React.SetStateAction<number>>;
-}
+import type { BlogContextType } from "../types/blog";
 
 export const BlogState: Partial<Post> = {
   _id: "",

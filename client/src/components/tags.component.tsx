@@ -1,11 +1,7 @@
 import { useContext } from "react";
 import { MdClose } from "react-icons/md";
 import { EditorContext } from "../Screens/editor-page";
-
-interface TagProps {
-  tag: string;
-  tagIndex: number;
-}
+import type { TagProps } from "../types/blog";
 
 const Tag: React.FC<TagProps> = ({ tag, tagIndex }) => {
   const context = useContext(EditorContext);

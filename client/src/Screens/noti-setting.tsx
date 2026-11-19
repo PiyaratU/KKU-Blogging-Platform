@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from "react";
 
 import { UserContext } from "../App";
 
-const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
 const NotiSettings: React.FC = () => {
   const { NotificationShow, setNotificationShow } = useContext(UserContext); 

@@ -43,27 +43,8 @@ import ForgotPasswordUser from "./Screens/ForgotPasswordUser";
 import axios from "axios";
 import { API_BASE_URL } from "./api/post";
 import PostStatisticsChart from "./components/stat-component";
-
-interface UserContextType {
-  userAuth: {
-    access_token: string | null;
-    _id?: string;
-    username?: string;
-    fullname?: string;
-    profile_picture?: string;
-    new_notification_available?: boolean;
-  };
-  setUserAuth: React.Dispatch<React.SetStateAction<any>>;
-  NotificationShow: boolean;
-  setNotificationShow: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-interface User {
-  access_token?: string;
-  role?: string;
-  username?: string;
-  _id?: string;
-}
+import type { UserContextType } from "./types/auth";
+import type { AppUser as User } from "./types/user";
 
 export const UserContext = createContext<UserContextType>({
   userAuth: { access_token: null },

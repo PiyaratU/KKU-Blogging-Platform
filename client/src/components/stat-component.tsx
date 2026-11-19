@@ -10,44 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
-interface WeeklyStat {
-  day: number;
-  likes: number;
-  comments: number;
-  saves: number;
-  reads: number;
-}
-
-interface yearlyStats {
-  month: number;
-  likes: number;
-  comments: number;
-  saves: number;
-  reads: number;
-}
-
-interface Stat {
-  dailyLikes: number;
-  weeklyStats?: WeeklyStat[];
-  monthlyLikes: number;
-  yearlyStats?: yearlyStats[];
-  dailySaves: number;
-  monthlySaves: number;
-  yearlySaves: number;
-  dailyComments: number;
-  monthlyComments: number;
-  yearlyComments: number;
-  dailyReads: number;
-  monthlyReads: number;
-  yearlyReads: number;
-}
-
-interface PostStatisticsChartProps {
-  postId: string;
-}
-
-type Timeframe = "daily" | "weekly" | "monthly" | "yearly";
+import type { WeeklyStat, yearlyStats, Stat, PostStatisticsChartProps, Timeframe } from "../types/stats";
 
 const PostStatisticsChart: React.FC<PostStatisticsChartProps> = ({
   postId,
@@ -62,7 +25,7 @@ const PostStatisticsChart: React.FC<PostStatisticsChartProps> = ({
     const fetchStatistics = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_ENDPOINT}/posts/${postId}/statistics`,
+          `${import.meta.env.REACT_APP_API_ENDPOINT}/posts/${postId}/statistics`,
           {
             headers: { Authorization: `Bearer ${access_token}` },
           }

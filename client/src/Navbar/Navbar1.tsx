@@ -17,15 +17,12 @@ import { searchPost } from "../api/search";
 import { Dropdown } from "react-bootstrap";
 import { FaUser } from "react-icons/fa";
 import axios from "axios";
+import type { Navbar1Props } from "../types/ui";
 
 const cates = ["Piyarat U", "ท่องเที่ยว", "Pearr"].map((name, index) => ({
   name,
   id: index
 }));
-
-interface Navbar1Props {
-  children?: ReactNode;
-}
 
 const Navbar1: React.FC<Navbar1Props> = ({ children }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -226,7 +223,7 @@ const Navbar1: React.FC<Navbar1Props> = ({ children }) => {
   ) => {
     e.preventDefault();
     try {
-      await axios.patch(`${process.env.REACT_APP_API_ENDPOINT}/notifications/${notificationId}/mark-as-read`);
+      await axios.patch(`${import.meta.env.REACT_APP_API_ENDPOINT}/notifications/${notificationId}/mark-as-read`);
       setNotifications((prevNotifications) =>
         prevNotifications.map((notification) =>
           notification._id === notificationId ? { ...notification, isRead: true } : notification
@@ -241,7 +238,7 @@ const Navbar1: React.FC<Navbar1Props> = ({ children }) => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/notifications?userId=${userId}`);
+        const response = await axios.get(`${import.meta.env.REACT_APP_API_ENDPOINT}/notifications?userId=${userId}`);
         setNotifications(response.data);
       } catch (error) {
         console.error("Error fetching notifications:", error);

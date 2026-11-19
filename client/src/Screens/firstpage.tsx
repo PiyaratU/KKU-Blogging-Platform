@@ -4,11 +4,8 @@ import logoKKU from "../pic/logo-head.jpg";
 import { motion } from "framer-motion";
 import heroImage from "../pic/hero-image.jpg"; // 📌 นำเข้ารูปภาพ
 import { IoMdHelpCircle } from "react-icons/io";
+import type { SplitTextProps } from "../types/ui";
 // กำหนดประเภทให้กับ props ของ SplitText
-interface SplitTextProps {
-  text: string;
-}
-
 const SplitText: React.FC<SplitTextProps> = ({ text }) => {
   return (
     <span>

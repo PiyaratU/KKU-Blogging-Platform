@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
 export const fetchProfile = async (me: string | null): Promise<any> => {
   console.log("me", me);

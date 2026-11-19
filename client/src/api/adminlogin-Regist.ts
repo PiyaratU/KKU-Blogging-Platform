@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
+import type { LoginResponse } from "../types/auth";
 
-const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
 
 export const registerAdmin = async (admin: any): Promise<any> => {
   const url = `${API_BASE_URL}/admin/register`;
@@ -35,12 +36,6 @@ export const registerAdmin = async (admin: any): Promise<any> => {
   }
 };
 // Define a type for the response data
-interface LoginResponse {
-  token: string;
-  id: string;
-  [key: string]: any; // Allow other fields as well
-}
-
 export const loginAdmin = async (
   email: string,
   password: string

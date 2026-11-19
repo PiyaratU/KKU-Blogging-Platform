@@ -1,11 +1,5 @@
 import React from "react";
-
-interface ConfirmCancelModalProps {
-  showModal: boolean;
-  onCancel: () => void;
-  onConfirm: () => void;
-  handleClose: () => void;
-}
+import type { ConfirmCancelModalProps } from "../types/ui";
 
 const ConfirmCancelModal: React.FC<ConfirmCancelModalProps> = ({
   showModal,

@@ -24,19 +24,9 @@ import {
 import { FollowerModal } from "./follower-modal";
 import { FollowingModal } from "./following-modal";
 import { ChatContext } from "./ChatContext";
-
-interface Profile {
-  fullname: string;
-  username: string;
-  profile_picture: string;
-  bio: string;
-  email: string;
-  total_posts: number;
-  total_reads: number;
-  total_blogs: number;
-  social_links: Record<string, string>;
-  joinedAt: string;
-}
+import type { Profile } from "../types/user";
+import type { ProfilePageBlogState as BlogState } from "../types/blog";
+import type { ChatContextChat as Chat, Message } from "../types/chat";
 
 export const profileData: Profile = {
   fullname: "",
@@ -50,13 +40,6 @@ export const profileData: Profile = {
   social_links: {},
   joinedAt: " ",
 };
-
-interface BlogState {
-  result: Post[];
-  totalDocs: number;
-  page: number;
-  user_id?: string;
-}
 
 const ProfilePage = () => {
   const { id: profileId } = useParams();
@@ -197,7 +180,7 @@ const ProfilePage = () => {
   };
 
   const handleFollow = useCallback(async () => {
-    const API_BASE_URL = `${process.env.REACT_APP_API_ENDPOINT}/follow`; // URL ของ API ที่ใช้สำหรับการ follow ผู้ใช้
+    const API_BASE_URL = `${import.meta.env.REACT_APP_API_ENDPOINT}/follow`; // URL ของ API ที่ใช้สำหรับการ follow ผู้ใช้
     try {
       // ส่งคำขอ POST ไปยัง API เพื่อติดตามผู้ใช้
       const response = await fetch(API_BASE_URL, {
@@ -256,20 +239,6 @@ const ProfilePage = () => {
     }
   }, [id, isFollowing]); // การใช้ useCallback โดยผูกกับ id และ isFollowing เพื่อเพิ่มประสิทธิภาพ
 
-  interface Chat {
-    _id: string;
-    members: string[];
-    deletedBy?: Map<string, boolean>;
-    messages: Message[];
-  }
-  interface Message {
-    chatId: string;
-    senderId: string;
-    text: string;
-    createdAt: string;
-    deletedBy?: { [userId: string]: boolean };
-  }
-  
   const { setIsChatBoxOpen, userChats, updateCurrentChat, createChat } = useContext(ChatContext);
   const [watingUserChatsUpdate,setWatingUserChatsUpdate] = useState(false);
 

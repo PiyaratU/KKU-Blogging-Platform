@@ -9,111 +9,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import InputBox from "../../components/input.component";
-
-export interface Report {
-  _id: string;
-  reason: string;
-  verified: boolean;
-  status: string;
-  createdAt: string;
-  reportedBy: {
-    _id: string;
-    fullname: string;
-  };
-  post: {
-    _id: string;
-    author: {
-      _id: string;
-      fullname: string;
-      banner: string;
-      profile_picture: string;
-    };
-    content: [
-      {
-        time: number;
-        blocks: [
-          {
-            id: string;
-            type: string;
-            data: {
-              text: string;
-            };
-          }
-        ];
-        version: string;
-      }
-    ];
-    image: string;
-    topic: string;
-    detail: string;
-    tags: string[];
-    banner: string;
-    publishedAt: string;
-    contentWithImages: {
-      content: string;
-      images?: string[];
-    }[];
-  };
-}
-
-interface AdminData {
-  firstname: string;
-  lastname: string;
-  email: string;
-  tel: string;
-  username: string; // เพิ่ม username
-}
-
-interface PasswordFormData {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}
-
-interface LoginLog {
-  _id: string;
-  adminId: {
-    username: string;
-    email: string;
-  };
-  loginTime: string;
-}
-
-interface AdminListData {
-  _id: string;
-  username: string;
-  email: string;
-  firstname: string;
-  lastname: string;
-  tel: string;
-}
-
-interface ConfirmationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-}
-
-interface EditAdminModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  admin: AdminListData;
-  onSave: (updatedData: AdminListData) => void;
-}
-
-interface AddAdminModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (
-    adminData: Omit<AdminListData, "_id"> & { password: string }
-  ) => void;
-}
+import type { Report, AdminData, PasswordFormData, LoginLog, AdminListData, ConfirmationModalProps, EditAdminModalProps, AddAdminModalProps } from "../../types/admin";
+export type { Report } from "../../types/admin";
 
 const AdminProfile: React.FC = () => {
   const { adminId } = useParams<{ adminId: string }>();
-  const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
+  const API_BASE_URL = import.meta.env.REACT_APP_API_ENDPOINT;
   const adminUsername = sessionStorage.getItem("userId");
   const [adminProfile, setAdminProfile] = useState<any>(true);
   const [selectedCate, setSelectedCate] = useState<string>("admin-profile"); // เพิ่มเติม: สร้าง selectedCate สำหรับเปลี่ยน cate ของหน้าเว็บ เปลี่ยนให้ defualt เป็น admin-profile
