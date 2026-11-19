@@ -1,50 +1,45 @@
 const mongoose = require("mongoose");
-
 require("../models/user");
-require("./blog");
 
-const ReplyCommentScema = new mongoose.Schema({
-  content: {
-    type: String,
-    required: true,
+const commentSchema = mongoose.Schema(
+  {
+    blog_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Post",
+    },
+    blog_author: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Post",
+    },
+    comment: {
+      type: String,
+      required: true,
+    },
+    children: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "comments",
+    },
+    commented_by: {
+      type: mongoose.Schema.Types.ObjectId,
+      require: true,
+      ref: "User",
+    },
+    isReply: {
+      type: Boolean,
+      default: false,
+    },
+    parent: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "comments",
+    },
   },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  replyTo: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: {
+      createdAt: "commentedAt",
+    },
+  }
+);
 
-const CommentSchema = new mongoose.Schema({
-  content: {
-    type: String,
-    required: true,
-  },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  post: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Post",
-    required: true,
-  },
-  replies: [ReplyCommentScema],
-  created_at: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const Comment = mongoose.model("Comment", CommentSchema);
-module.exports = Comment;
+module.exports = mongoose.model("comments", commentSchema);

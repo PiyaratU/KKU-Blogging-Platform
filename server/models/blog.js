@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 require("./user");
-require("./comment");
+require("./legacy-post-comment"); // ลงทะเบียน model "Comment" ที่ postSchema อ้างถึง (ref: "Comment")
 require("./like");
 require("./save");
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Notification = require("../models/notifaications");
+const Notification = require("../models/notification");
 const User = require("../models/user");
 const { NotiMailer } = require("../mail/noti_sender");
  

@@ -5,27 +5,10 @@ const Report = require("../models/report");
 const Post = require("../models/blog");
 const Comment = require("../models/comment");
 const Like = require("../models/like");
-const Notification = require("../models/notifaications");
+const Notification = require("../models/notification");
 const jwt = require("jsonwebtoken");
 const { NotiMailer } = require("../mail/noti_sender");
-
-const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers["authorization"] || req.headers["Authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (token === null) {
-    return res.status(401).json({ error: "ไม่มี token การเข้าถึง" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "การเข้าถึง token ไม่ถูกต้อง" });
-    }
-
-    req.user = user.id;
-    next();
-  });
-};
+const { verifyJWT } = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   try {
@@ -67,7 +50,6 @@ router.get("/by/:id", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
 
 // Add a new report
 router.post("/add", async (req, res) => {
@@ -171,7 +153,7 @@ router.delete("/:reportId/deletePost",verifyJWT, async (req, res) => {
       return res.status(404).json({ message: "Post not found." });
     }
 
-    await Comment.deleteMany({ post: post._id });
+    await Comment.deleteMany({ blog_id: post._id }); // คอมเมนต์เก็บ id โพสต์ไว้ใน blog_id
     await Like.deleteMany({ post: post._id });
 
     await Post.deleteOne({ _id: post._id });

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Post = require("../models/blog");
-const Notification = require("../models/notifaications");
+const Notification = require("../models/notification");
 const Like = require("../models/like");
 const Comment = require("../models/comment");
 const Report = require("../models/report");
@@ -10,24 +10,7 @@ const bcrypt = require("bcrypt");
 const BadWordScanner = require("../utils/badword");
 const Admin = require("../models/admin");
 const jwt = require("jsonwebtoken");
-
-const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (token === null) {
-    return res.status(401).json({ error: "ไม่มี token การเข้าถึง" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "การเข้าถึง token ไม่ถูกต้อง" });
-    }
-
-    req.user = user.id;
-    next();
-  });
-};
+const { verifyJWT } = require("../middleware/auth");
 
 // Route URL to get all users
 router.get("/", async (req, res) => {

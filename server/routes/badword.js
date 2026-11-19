@@ -3,24 +3,7 @@ const router = express.Router();
 const BadWordGroup = require("../models/badword");
 const jwt = require("jsonwebtoken");
 const { loadBadWordsFromDB } = require("../utils/badword");
-
-const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers["authorization"] || req.headers["Authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (!token) {
-    return res.status(401).json({ error: "ไม่มี token การเข้าถึง" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "การเข้าถึง token ไม่ถูกต้อง" });
-    }
-
-    req.user = user.id;
-    next();
-  });
-};
+const { verifyJWT } = require("../middleware/auth");
 
 router.get("/",verifyJWT,async (req, res) => {
   try {

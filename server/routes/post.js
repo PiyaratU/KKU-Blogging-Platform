@@ -2,34 +2,18 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Post = require("../models/blog");
-const Comment = require("../models/comment");
+const Comment = require("../models/legacy-post-comment"); // ใช้กับ route คอมเมนต์ใต้ /posts เดิม (หน้าเว็บไม่ได้เรียกแล้ว)
+const BlogComment = require("../models/comment"); // คอมเมนต์จริงของบล็อก (route /create-blog)
 const Like = require("../models/like");
 const SavedPost = require("../models/save");
-const Notification = require("../models/notifaications");
-const auth = require("./authMiddleware");
+const Notification = require("../models/notification");
+
 const jwt = require("jsonwebtoken");
 const { NotiMailer } = require("../mail/noti_sender");
 const BadWordScanner = require("../utils/badword");
 const recommend = require("../utils/itembase");
 const Report = require("../models/report");
-
-const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (token === null) {
-    return res.status(401).json({ error: "ไม่มี token การเข้าถึง" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "การเข้าถึง token ไม่ถูกต้อง" });
-    }
-
-    req.user = user.id;
-    next();
-  });
-};
+const { verifyJWT, requireUser: auth } = require("../middleware/auth");
 
 router.get("/search", async (req, res) => {
   const query = req.query.query;
@@ -311,7 +295,7 @@ router.delete("/:id", auth, getPost, async (req, res) => {
         .json({ message: "You are not authorized to delete this post" });
     }
 
-    await Comment.deleteMany({ post: post._id });
+    await BlogComment.deleteMany({ blog_id: post._id }); // คอมเมนต์จริงเก็บ id โพสต์ไว้ใน blog_id
     await Like.deleteMany({ post: post._id });
 
     await Post.deleteOne({ _id: post._id });

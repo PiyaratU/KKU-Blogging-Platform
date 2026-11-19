@@ -6,32 +6,15 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const Blog = require("../models/blog");
 const Like = require("../models/like");
-const Notifications = require("../models/notifaications");
+const Notifications = require("../models/notification");
 const View = require("../models/view");
-const Comment = require("../models/comments");
-const auth = require("./authMiddleware");
+const Comment = require("../models/comment");
+
 const bcrypt = require("bcrypt");
 const { NotiMailer } = require("../mail/noti_sender");
 const BadWordScanner = require("../utils/badword");
 const Report = require("../models/report");
-
-const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (token === null) {
-    return res.status(401).json({ error: "ไม่มี token การเข้าถึง" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "การเข้าถึง token ไม่ถูกต้อง" });
-    }
-
-    req.user = user.id;
-    next();
-  });
-};
+const { verifyJWT, requireUser: auth } = require("../middleware/auth");
 
 router.post("/", verifyJWT, async (req, res) => {
   const { nanoid } = require("nanoid");
@@ -1014,7 +997,8 @@ router.post("/delete-blog", verifyJWT, (req, res) => {
 
   Blog.findOneAndDelete({ blog_id })
     .then((blog) => {
-      Notifications.deleteMany({ blog_id: blog._id }).then((data) =>
+      // การแจ้งเตือนเก็บ id โพสต์ไว้ในช่อง blog (ไม่ใช่ blog_id) — เดิมใช้ blog_id จึงไม่เคยลบได้
+      Notifications.deleteMany({ blog: blog._id }).then((data) =>
         console.log("ลบการแจ้งเตือนแล้ว")
       );
 

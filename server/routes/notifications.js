@@ -1,30 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const Notification = require("../models/notifaications");
-const Notifications = require("../models/notifications");
+const Notification = require("../models/notification");
 const Report = require("../models/report");
 const Post = require("../models/blog");
 const Comment = require("../models/comment");
 const Like = require("../models/like");
 const jwt = require("jsonwebtoken");
-
-const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (token === null) {
-    return res.status(401).json({ error: "ไม่มี token การเข้าถึง" });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: "การเข้าถึง token ไม่ถูกต้อง" });
-    }
-
-    req.user = user.id;
-    next();
-  });
-};
+const { verifyJWT } = require("../middleware/auth");
 
 router.get("/:id", async (req, res) => {
   const { id: userId } = req.params; // Extract userId from req.params
@@ -169,7 +151,7 @@ router.post("/notifications", verifyJWT, (req, res) => {
     skipDocs -= deletedDoccount;
   }
 
-  Notifications.find(findQuery)
+  Notification.find(findQuery)
     .skip(skipDocs)
     .limit(maxLimit)
     .populate("blog", "topic blog_id")
@@ -181,7 +163,7 @@ router.post("/notifications", verifyJWT, (req, res) => {
     .select("createdAt type seen reply reason")
     .then((notifications) => {
       
-      Notifications.updateMany(findQuery, {seen: true})
+      Notification.updateMany(findQuery, {seen: true})
       .skip(skipDocs)
       .limit(maxLimit)
       .then(() => console.log("ดูการแจ้งเตือนแล้ว"))
@@ -203,7 +185,7 @@ router.post("/all-notification-count", verifyJWT, (req, res) => {
   if (filter !== "all") {
     findQuery.type = filter;
   }
-  Notifications.countDocuments(findQuery)
+  Notification.countDocuments(findQuery)
     .then((count) => {
       return res.status(200).json({ totalDocs: count });
     })
