@@ -28,7 +28,7 @@ const VisibilitySelector = ({
           aria-checked={active}
           onClick={() => onChange(value)}
           className={cn(
-            "tw:flex tw:cursor-pointer tw:items-start tw:gap-2.5 tw:rounded-xl tw:border tw:p-3 tw:text-left tw:transition-colors",
+            "tw:flex tw:cursor-pointer tw:items-start tw:gap-2.5 tw:rounded-xl tw:border tw:p-3 tw:text-left tw:transition-colors tw:outline-none tw:focus-visible:ring-2 tw:focus-visible:ring-primary-pastel",
             active
               ? "tw:border-primary tw:bg-primary-soft"
               : "tw:border-line tw:bg-white tw:hover:bg-surface"
