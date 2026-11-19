@@ -6,34 +6,46 @@ type FeedSidebarProps = {
   activeTag?: string;
   onTagClick: (tag: string) => void;
   /** รายการบล็อกยอดนิยม (หรือ Loader / ข้อความว่าง) */
-  trending: ReactNode;
+  popular: ReactNode;
+  /** รายการแนะนำ — ไม่ส่ง = ไม่แสดงหัวข้อนี้ */
+  picks?: ReactNode;
 };
 
-const heading = "tw:mb-4 tw:mt-0 tw:text-sm tw:font-semibold tw:text-ink";
+const Section = ({ eyebrow, title, children }: { eyebrow: string; title: string; children: ReactNode }) => (
+  <div>
+    <p className="tw:m-0 tw:text-xs tw:text-muted">{eyebrow}</p>
+    <h3 className="tw:mt-0.5 tw:mb-3 tw:text-xl tw:font-semibold tw:text-ink">{title}</h3>
+    {children}
+  </div>
+);
 
-/** แถบข้างหน้าฟีด (จอใหญ่) — แท็กยอดนิยม + บล็อกที่ถูกใจมากที่สุด */
-const FeedSidebar = ({ tags, activeTag, onTagClick, trending }: FeedSidebarProps) => (
+/** แถบข้างหน้าแรก (จอใหญ่) — ยอดนิยม / หมวดหมู่ / แนะนำสำหรับคุณ */
+const FeedSidebar = ({ tags, activeTag, onTagClick, popular, picks }: FeedSidebarProps) => (
   <aside className="tw:hidden tw:w-80 tw:shrink-0 tw:lg:block">
-    <div className="tw:sticky tw:top-24 tw:space-y-6">
-      <div className="tw:rounded-2xl tw:bg-violet-50/70 tw:p-5">
-        <h3 className={heading}>แท็กยอดนิยม</h3>
+    <div className="tw:space-y-12">
+      <Section eyebrow="กำลังมาแรง" title="ยอดนิยม">
+        {popular}
+      </Section>
+
+      <Section eyebrow="ค้นหาตามหัวข้อ" title="หมวดหมู่">
         {tags.length ? (
           <div className="tw:flex tw:flex-wrap tw:gap-2">
             {tags.map((tag) => (
-              <Tag key={tag} active={activeTag === tag.toLowerCase()} onClick={() => onTagClick(tag)}>
+              <Tag key={tag} hash={false} active={activeTag === tag.toLowerCase()} onClick={() => onTagClick(tag)}>
                 {tag}
               </Tag>
             ))}
           </div>
         ) : (
-          <p className="tw:m-0 tw:text-sm tw:text-muted">ยังไม่มีแท็ก — แท็กที่ใช้บ่อยในบล็อกจะขึ้นที่นี่</p>
+          <p className="tw:m-0 tw:text-sm tw:text-muted">ยังไม่มีหมวดหมู่ — แท็กที่ใช้บ่อยในบล็อกจะขึ้นที่นี่</p>
         )}
-      </div>
+      </Section>
 
-      <div className="tw:rounded-2xl tw:bg-amber-50/70 tw:p-5">
-        <h3 className={heading}>ถูกใจมากที่สุด</h3>
-        {trending}
-      </div>
+      {picks && (
+        <Section eyebrow="คัดมาให้คุณ" title="แนะนำสำหรับคุณ">
+          {picks}
+        </Section>
+      )}
     </div>
   </aside>
 );

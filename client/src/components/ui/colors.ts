@@ -29,3 +29,15 @@ export const hashIndex = (text: string, size: number) => {
 
 export const pastelFor = (text: string) => PASTEL[hashIndex(text, PASTEL.length)];
 export const pastelGradientFor = (text: string) => PASTEL_GRADIENTS[hashIndex(text, PASTEL_GRADIENTS.length)];
+
+/** สีตัวหนังสือเข้มขึ้นของชุดเดียวกัน (index ตรงกับ PASTEL) — ใช้กับชื่อหมวดหมู่ในบรรทัดวันที่ */
+export const PASTEL_TEXT = [
+  "tw:text-violet-600",
+  "tw:text-sky-600",
+  "tw:text-emerald-600",
+  "tw:text-amber-600",
+  "tw:text-rose-600",
+  "tw:text-teal-600",
+] as const;
+
+export const pastelTextFor = (text: string) => PASTEL_TEXT[hashIndex(text, PASTEL_TEXT.length)];

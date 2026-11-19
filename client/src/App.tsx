@@ -20,6 +20,7 @@ import Chat from "./Screens/chat";
 import { ChatContextProvider } from "./Screens/ChatContext";
 import Navbar2 from "./Navbar/Navbar1";
 import Navbar from "./Navbar/Navbar";
+import SiteFooter from "./components/SiteFooter";
 import HelpCentre from "./Screens/helpcentre";
 import Helpnotlog from "./Screens/help-notlogin";
 import { createContext } from "react";
@@ -59,6 +60,7 @@ function NavbarLayout() {
     <>
       <Navbar />
       <Outlet />
+      <SiteFooter />
     </>
   );
 }

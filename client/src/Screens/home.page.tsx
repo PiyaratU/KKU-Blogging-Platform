@@ -1,18 +1,18 @@
 import AnimationWrapper from "./page-animation";
-import InPageNavigation from "../components/Inpage-navigation";
+import HomeHero from "../components/home/HomeHero";
+import FeaturedPost from "../components/home/FeaturedPost";
+import CategoryTiles from "../components/home/CategoryTiles";
+import PickItem from "../components/home/PickItem";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import Loader from "../components/loader.component";
 import { Post } from "../types/post";
 import BlogCard from "../components/blogpost.component";
 import MinimalBlogPost from "./nobanner-blog";
-import FeedHero from "../components/FeedHero";
 import FeedSidebar from "../components/FeedSidebar";
-import { activeTabRef } from "../components/Inpage-navigation";
 import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../components/filter-pagination";
 import LoadMoreDataBtn from "../components/load-more.component";
-import Tag from "../components/ui/Tag";
 import { Button, LinkButton } from "../components/ui/Button";
 import { LuFileEdit } from "react-icons/lu";
 import { UserContext } from "../App";
@@ -183,7 +183,6 @@ const HomePage = () => {
   }, [recommend, blogs]);
 
   useEffect(() => {
-    activeTabRef.current?.click();
 
     if (pageState === "หน้าหลัก") {
       fetchLatestBlogs({ page: 1 });
@@ -198,12 +197,16 @@ const HomePage = () => {
 
   const isTagFeed = pageState !== "หน้าหลัก";
 
-  const trendingList =
+  // บทความเด่น = บล็อกที่ถูกใจมากที่สุด (ยังไม่มี → บล็อกล่าสุด)
+  const featured = trendingBlogs?.[0] ?? uniqueBlogs?.result?.[0] ?? null;
+  const picks = recommend?.result?.slice(0, 4) ?? [];
+
+  const popularList =
     trendingBlogs === null ? (
       <Loader />
     ) : trendingBlogs.length ? (
       <div className="tw:divide-y tw:divide-line">
-        {trendingBlogs.map((blog, i) => (
+        {trendingBlogs.slice(0, 5).map((blog, i) => (
           <MinimalBlogPost key={blog.blog_id ?? i} blog={blog} index={i} />
         ))}
       </div>
@@ -211,67 +214,90 @@ const HomePage = () => {
       <NoDataMessage compact message="ยังไม่มีบล็อกยอดนิยม — บล็อกที่มีคนกดถูกใจจะขึ้นที่นี่" />
     );
 
+  const picksList = picks.length ? (
+    <div className="tw:divide-y tw:divide-line">
+      {picks.map((blog, i) => (
+        <PickItem key={blog.blog_id ?? i} blog={blog} />
+      ))}
+    </div>
+  ) : null;
+
   return (
     <AnimationWrapper>
-      <div className="tw:mx-auto tw:flex tw:min-h-[calc(100vh-4rem)] tw:max-w-7xl tw:gap-10 tw:px-4 tw:py-6 tw:md:px-8 tw:xl:gap-14">
-        {/* ฟีดบล็อก */}
-        <div className="tw:min-w-0 tw:flex-1">
-          <FeedHero />
+      <div className="tw:mx-auto tw:max-w-7xl tw:px-4 tw:pb-20 tw:md:px-8">
+        <HomeHero />
 
-          {/* จอเล็กไม่มีแถบข้าง — แสดงแท็กเป็นแถวเลื่อนด้านบนแทน */}
-          {allTags.length > 0 && (
-            <div className="tw:-mx-4 tw:mb-2 tw:flex tw:gap-2 tw:overflow-x-auto tw:px-4 tw:pb-2 tw:lg:hidden">
-              {allTags.map((tag) => (
-                <Tag key={tag} active={pageState === tag.toLowerCase()} onClick={() => loadBlogBycategory(tag)}>
-                  {tag}
-                </Tag>
-              ))}
-            </div>
-          )}
+        {!isTagFeed && featured && <FeaturedPost blog={featured} />}
 
-          <InPageNavigation routes={[isTagFeed ? `#${pageState}` : "ล่าสุด", "ยอดนิยม"]} defaultHidden={["ยอดนิยม"]}>
-            <>
-              {blogs === null ? (
-                <Loader />
-              ) : uniqueBlogs?.result.length ? (
-                uniqueBlogs.result.map((blog, i) => (
-                  <AnimationWrapper transition={{ duration: 0.4, delay: Math.min(i, 8) * 0.05 }} key={blog.blog_id ?? i}>
-                    <BlogCard content={blog} author={blog.author} />
-                  </AnimationWrapper>
-                ))
-              ) : isTagFeed ? (
-                <NoDataMessage
-                  message={`ยังไม่มีบล็อกในแท็ก #${pageState}`}
-                  hint="ลองเลือกแท็กอื่น หรือกลับไปดูบล็อกล่าสุดทั้งหมด"
-                  action={
-                    <Button variant="secondary" onClick={() => loadBlogBycategory(pageState)}>
-                      ดูบล็อกทั้งหมด
-                    </Button>
-                  }
-                />
-              ) : (
-                <NoDataMessage
-                  message="ยังไม่มีบล็อกที่เผยแพร่"
-                  hint="มาเป็นคนแรกที่แบ่งปันเรื่องราว ความรู้ หรือประสบการณ์ให้เพื่อน ๆ ได้อ่าน"
-                  action={
-                    access_token ? (
-                      <LinkButton to="/editor">
-                        <LuFileEdit className="tw:size-4" />
-                        เขียนบล็อกแรก
-                      </LinkButton>
-                    ) : (
-                      <LinkButton to="/signup">สมัครสมาชิกเพื่อเริ่มเขียน</LinkButton>
-                    )
-                  }
-                />
+        <CategoryTiles tags={allTags} activeTag={pageState} onSelect={loadBlogBycategory} />
+
+        <div className="tw:mt-16 tw:flex tw:gap-12 tw:xl:gap-16">
+          {/* บล็อกล่าสุด / บล็อกในหมวดที่เลือก */}
+          <div className="tw:min-w-0 tw:flex-1">
+            <div className="tw:flex tw:items-baseline tw:justify-between tw:gap-4">
+              <h2 className="tw:m-0 tw:text-2xl tw:font-semibold tw:text-ink">
+                {isTagFeed ? `หมวด: ${pageState}` : "บล็อกล่าสุด"}
+              </h2>
+              {isTagFeed && (
+                <Button variant="ghost" size="sm" onClick={() => loadBlogBycategory(pageState)}>
+                  ดูทั้งหมด
+                </Button>
               )}
-              <LoadMoreDataBtn state={blogs} fetchDataFun={isTagFeed ? fetchBlogsByCategory : fetchLatestBlogs} />
-            </>
-            {trendingList}
-          </InPageNavigation>
-        </div>
+            </div>
 
-        <FeedSidebar tags={allTags} activeTag={pageState} onTagClick={loadBlogBycategory} trending={trendingList} />
+            {blogs === null ? (
+              <Loader />
+            ) : uniqueBlogs?.result.length ? (
+              <div className="tw:divide-y tw:divide-line">
+                {uniqueBlogs.result.map((blog, i) => (
+                  <BlogCard key={blog.blog_id ?? i} content={blog} author={blog.author} />
+                ))}
+              </div>
+            ) : isTagFeed ? (
+              <NoDataMessage
+                message={`ยังไม่มีบล็อกในหมวด ${pageState}`}
+                hint="ลองเลือกหมวดอื่น หรือกลับไปดูบล็อกล่าสุดทั้งหมด"
+                action={
+                  <Button variant="secondary" onClick={() => loadBlogBycategory(pageState)}>
+                    ดูบล็อกทั้งหมด
+                  </Button>
+                }
+              />
+            ) : (
+              <NoDataMessage
+                message="ยังไม่มีบล็อกที่เผยแพร่"
+                hint="มาเป็นคนแรกที่แบ่งปันเรื่องราว ความรู้ หรือประสบการณ์ให้เพื่อน ๆ ได้อ่าน"
+                action={
+                  access_token ? (
+                    <LinkButton to="/editor">
+                      <LuFileEdit className="tw:size-4" />
+                      เขียนบล็อกแรก
+                    </LinkButton>
+                  ) : (
+                    <LinkButton to="/signup">สมัครสมาชิกเพื่อเริ่มเขียน</LinkButton>
+                  )
+                }
+              />
+            )}
+
+            <LoadMoreDataBtn state={blogs} fetchDataFun={isTagFeed ? fetchBlogsByCategory : fetchLatestBlogs} />
+
+            {/* จอเล็กไม่มีแถบข้าง — แสดงยอดนิยมต่อท้ายรายการ */}
+            <div className="tw:mt-12 tw:lg:hidden">
+              <p className="tw:m-0 tw:text-xs tw:text-muted">กำลังมาแรง</p>
+              <h3 className="tw:mt-0.5 tw:mb-3 tw:text-xl tw:font-semibold tw:text-ink">ยอดนิยม</h3>
+              {popularList}
+            </div>
+          </div>
+
+          <FeedSidebar
+            tags={allTags}
+            activeTag={pageState}
+            onTagClick={loadBlogBycategory}
+            popular={popularList}
+            picks={picksList}
+          />
+        </div>
       </div>
     </AnimationWrapper>
   );
