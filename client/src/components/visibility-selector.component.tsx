@@ -1,74 +1,50 @@
-import React, { useState } from 'react';
-import { FaEarthAmericas } from 'react-icons/fa6';
-import { FaUserFriends } from 'react-icons/fa';
+import { FaEarthAmericas } from "react-icons/fa6";
+import { FaUserFriends } from "react-icons/fa";
+import { cn } from "./ui/cn";
 
-const VisibilitySelector = ({ 
-  visibility, 
-  onChange 
-}: { 
+type Visibility = "public" | "followers";
+
+const OPTIONS: { value: Visibility; label: string; hint: string; Icon: typeof FaUserFriends }[] = [
+  { value: "public", label: "สาธารณะ", hint: "ทุกคนเห็นได้", Icon: FaEarthAmericas },
+  { value: "followers", label: "ผู้ติดตาม", hint: "เฉพาะผู้ติดตาม", Icon: FaUserFriends },
+];
+
+/** เลือกว่าใครเห็นโพสต์ได้ — การ์ดสองตัวเลือก */
+const VisibilitySelector = ({
+  visibility,
+  onChange,
+}: {
   visibility: string;
-  onChange: (value: 'public' | 'followers') => void;
-}) => {
-  const [showDropdown, setShowDropdown] = useState(false);
-
-  return (
-    <div className="position-relative mb-4">
-      <p className="text-secondary mb-2">โพสต์นี้จะแสดงให้ใครเห็นบ้าง?</p>
-      <div className="dropdown">
-        <button 
-          className="btn btn-light w-100 d-flex align-items-center justify-content-between"
-          onClick={() => setShowDropdown(!showDropdown)}
-          style={{ border: '1px solid #dee2e6' }}
+  onChange: (value: Visibility) => void;
+}) => (
+  <div role="radiogroup" aria-label="ใครเห็นโพสต์นี้ได้" className="tw:grid tw:grid-cols-2 tw:gap-2">
+    {OPTIONS.map(({ value, label, hint, Icon }) => {
+      const active = visibility === value;
+      return (
+        <button
+          key={value}
+          type="button"
+          role="radio"
+          aria-checked={active}
+          onClick={() => onChange(value)}
+          className={cn(
+            "tw:flex tw:cursor-pointer tw:items-start tw:gap-2.5 tw:rounded-xl tw:border tw:p-3 tw:text-left tw:transition-colors",
+            active
+              ? "tw:border-primary tw:bg-primary-soft"
+              : "tw:border-line tw:bg-white tw:hover:bg-surface"
+          )}
         >
-          <div className="d-flex align-items-center gap-2">
-            {visibility === 'public' ? (
-              <>
-                <FaEarthAmericas className="text-secondary" /> 
-                <span>สาธารณะ - ทุกคนสามารถเห็นโพสต์นี้</span>
-              </>
-            ) : (
-              <>
-                <FaUserFriends className="text-secondary" /> 
-                <span>ผู้ติดตาม - เฉพาะผู้ติดตามเท่านั้นที่จะเห็นโพสต์นี้</span>
-              </>
-            )}
-          </div>
-          <i className={`bi bi-chevron-${showDropdown ? 'up' : 'down'}`}></i>
+          <Icon className={cn("tw:mt-0.5 tw:size-4 tw:shrink-0", active ? "tw:text-primary-strong" : "tw:text-muted")} />
+          <span className="tw:min-w-0">
+            <span className={cn("tw:block tw:text-sm tw:font-medium", active ? "tw:text-primary-strong" : "tw:text-ink")}>
+              {label}
+            </span>
+            <span className="tw:block tw:text-xs tw:text-muted">{hint}</span>
+          </span>
         </button>
-        
-        {showDropdown && (
-          <div className="dropdown-menu show w-100 p-2">
-            <button 
-              className={`dropdown-item d-flex align-items-center gap-2 p-2 rounded ${visibility === 'public' ? 'active' : ''}`}
-              onClick={() => {
-                onChange('public');
-                setShowDropdown(false);
-              }}
-            >
-              <FaEarthAmericas className="text-secondary" />
-              <div>
-                <div>สาธารณะ</div>
-                <small className="text-secondary">ทุกคนสามารถเห็นโพสต์นี้</small>
-              </div>
-            </button>
-            <button 
-              className={`dropdown-item d-flex align-items-center gap-2 p-2 rounded ${visibility === 'followers' ? 'active' : ''}`}
-              onClick={() => {
-                onChange('followers');
-                setShowDropdown(false);
-              }}
-            >
-              <FaUserFriends className="text-secondary" />
-              <div>
-                <div>ผู้ติดตาม</div>
-                <small className="text-secondary">เฉพาะผู้ติดตามเท่านั้นที่จะเห็นโพสต์นี้</small>
-              </div>
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+      );
+    })}
+  </div>
+);
 
 export default VisibilitySelector;

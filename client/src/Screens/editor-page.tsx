@@ -72,7 +72,7 @@ const Editor = () => {
     >
       {/* {editorState === "editor" ? <BlogEditor /> : <PublishForm />} */}
       {access_token === null ? (
-        <Navigate to="/singin" />
+        <Navigate to="/signin" />
       ) : loading ? (
         <Loader />
       ) : editorState === "editor" ? (

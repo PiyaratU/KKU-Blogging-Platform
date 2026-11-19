@@ -66,8 +66,14 @@ function NavbarLayout() {
 }
 
 function App() {
-  const [userAuth, setUserAuth] = useState<{ access_token: string | null }>({
-    access_token: null,
+  // อ่าน session ตั้งแต่แรก — ไม่งั้นเปิด /editor ตรง ๆ จะถูกเด้งไปหน้าเข้าสู่ระบบก่อน session โหลดเสร็จ
+  const [userAuth, setUserAuth] = useState<{ access_token: string | null }>(() => {
+    try {
+      const stored = lookInSession("user");
+      return stored ? JSON.parse(stored) : { access_token: null };
+    } catch {
+      return { access_token: null };
+    }
   });
   const [NotificationShow, setNotificationShow] = useState(false);
 
