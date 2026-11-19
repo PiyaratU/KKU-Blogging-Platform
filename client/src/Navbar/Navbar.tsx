@@ -2,8 +2,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 // สไตล์เดิมของ navbar — ยังมีหน้าอื่นใช้คลาสในไฟล์นี้ (หน้าเขียนบล็อก, ปุ่ม btn-dark/btn-light, แชท)
 // ย้ายหน้าเหล่านั้นเป็น Tailwind ครบแล้วค่อยลบ
 import "./Navbar.css";
-import logoKKU from "../pic/logo-head.jpg";
-import { Link, useNavigate } from "react-router-dom";
+import logoKKU from "../pic/logo-headV2.png";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoIosSearch } from "react-icons/io";
 import { LuFileEdit } from "react-icons/lu";
 import { UserContext } from "../App";
@@ -134,58 +134,53 @@ function Navbar() {
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
-    <header className="tw:sticky tw:top-0 tw:z-40 tw:border-b tw:border-line tw:bg-white/90 tw:backdrop-blur">
-      {/* 3 คอลัมน์: ซ้าย = ค้นหา · กลาง = โลโก้ · ขวา = เมนู + ปุ่มของผู้ใช้ */}
-      <nav className="tw:mx-auto tw:grid tw:h-16 tw:max-w-7xl tw:grid-cols-[1fr_auto_1fr] tw:items-center tw:gap-4 tw:px-4 tw:md:h-20 tw:md:px-8">
-        <div className="tw:flex tw:items-center tw:gap-1">
+    <header className="tw:sticky tw:top-0 tw:z-40 tw:border-b tw:border-line/70 tw:bg-white/85 tw:backdrop-blur-md">
+      {/* ซ้าย = โลโก้ + เมนู · ขวา = ค้นหา + ปุ่มของผู้ใช้ */}
+      <nav className="tw:relative tw:mx-auto tw:flex tw:h-16 tw:max-w-7xl tw:items-center tw:gap-2 tw:px-4 tw:md:h-[72px] tw:md:px-8">
+        <Link to="/homepage" className="tw:-ml-2 tw:flex tw:shrink-0 tw:items-center" aria-label="หน้าแรก">
+          <img src={logoKKU} alt="KKU Blogging Platform" className="tw:block tw:h-11 tw:w-auto tw:md:h-12" />
+        </Link>
+
+        <div className="tw:ml-4 tw:hidden tw:items-center tw:gap-1 tw:md:flex">
+          {MENU_LINKS(!!access_token).map((l) => (
+            <NavLink
+              key={l.to}
+              to={l.to}
+              className={({ isActive }) =>
+                cn(
+                  "tw:rounded-full tw:px-4 tw:py-2 tw:text-sm tw:font-medium tw:no-underline tw:transition-colors",
+                  isActive
+                    ? "tw:bg-primary-soft tw:text-primary-strong"
+                    : "tw:text-ink-soft tw:hover:bg-surface tw:hover:text-ink"
+                )
+              }
+            >
+              {l.label}
+            </NavLink>
+          ))}
+        </div>
+
+        <div className="tw:ml-auto tw:flex tw:items-center tw:gap-1 tw:md:gap-2">
+          {/* ช่องค้นหา — จอใหญ่เห็นตลอด · จอเล็กกดแว่นขยายแล้วเปิดเป็นแถบใต้ navbar */}
+          <label className="tw:relative tw:mr-1 tw:mb-0 tw:hidden tw:lg:block">
+            <span className="tw:sr-only">ค้นหา</span>
+            <IoIosSearch className="tw:pointer-events-none tw:absolute tw:left-3.5 tw:top-1/2 tw:size-[18px] tw:-translate-y-1/2 tw:text-muted" />
+            <input
+              type="search"
+              placeholder="ค้นหาบล็อก ผู้เขียน แท็ก"
+              className="tw:h-10 tw:w-64 tw:rounded-full tw:border tw:border-transparent tw:bg-surface tw:pl-10 tw:pr-4 tw:text-sm tw:text-ink tw:outline-none tw:transition-all tw:placeholder:text-muted tw:focus:w-80 tw:focus:border-primary-pastel tw:focus:bg-white"
+              onKeyDown={handleSearch}
+            />
+          </label>
           <button
             type="button"
-            className={iconButton}
+            className={cn(iconButton, "tw:lg:hidden")}
             onClick={() => setSearchBoxVisibility((v) => !v)}
             aria-label="ค้นหา"
             aria-expanded={searchBoxVisibility}
           >
             <IoIosSearch className="tw:size-5" />
           </button>
-          <span className="tw:hidden tw:text-sm tw:text-muted tw:lg:inline">ค้นหาบล็อก</span>
-        </div>
-
-        <Link to="/homepage" className="tw:m-0 tw:flex tw:items-center tw:justify-center" aria-label="หน้าแรก">
-          <img src={logoKKU} alt="KKU Blogging Platform" className="tw:h-8 tw:w-auto tw:md:h-10" />
-        </Link>
-
-        {/* ช่องค้นหา — กดแว่นขยายแล้วเปิดเป็นแถบใต้ navbar */}
-        {searchBoxVisibility && (
-          <div className="tw:absolute tw:inset-x-0 tw:top-full tw:border-b tw:border-line tw:bg-white tw:py-3">
-            <label className="tw:relative tw:mx-auto tw:mb-0 tw:block tw:max-w-2xl tw:px-4">
-              <span className="tw:sr-only">ค้นหา</span>
-              <IoIosSearch className="tw:pointer-events-none tw:absolute tw:left-7 tw:top-1/2 tw:size-5 tw:-translate-y-1/2 tw:text-muted" />
-              <input
-                type="search"
-                autoFocus
-                placeholder="ค้นหาบล็อก ผู้เขียน แท็ก แล้วกด Enter"
-                className="tw:h-11 tw:w-full tw:rounded-full tw:border tw:border-transparent tw:bg-surface tw:pl-10 tw:pr-4 tw:text-sm tw:text-ink tw:outline-none tw:transition-colors tw:focus:border-line tw:focus:bg-white"
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") setSearchBoxVisibility(false);
-                  handleSearch(e);
-                }}
-              />
-            </label>
-          </div>
-        )}
-
-        <div className="tw:flex tw:items-center tw:justify-end tw:gap-1 tw:md:gap-2">
-          <span className="tw:mr-2 tw:hidden tw:items-center tw:gap-6 tw:lg:inline-flex">
-            {MENU_LINKS(!!access_token).map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                className="tw:text-sm tw:font-medium tw:text-ink-soft tw:no-underline tw:transition-colors tw:hover:text-primary-strong"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </span>
 
           {access_token ? (
             <>
@@ -279,17 +274,41 @@ function Navbar() {
             </>
           ) : (
             <>
-              <LinkButton to="/signin" size="sm">
-                เข้าสู่ระบบ
-              </LinkButton>
-              <span className="tw:hidden tw:md:inline-flex">
-                <LinkButton to="/signup" size="sm" variant="secondary">
-                  สมัครสมาชิก
+              {/* จอเล็ก: ปุ่มเข้าสู่ระบบปุ่มเดียว · จอใหญ่: เข้าสู่ระบบ (เรียบ) + สมัครสมาชิก (ปุ่มหลัก) */}
+              <span className="tw:md:hidden">
+                <LinkButton to="/signin" size="sm">
+                  เข้าสู่ระบบ
                 </LinkButton>
+              </span>
+              <span className="tw:hidden tw:md:inline-flex">
+                <LinkButton to="/signin" variant="ghost">
+                  เข้าสู่ระบบ
+                </LinkButton>
+              </span>
+              <span className="tw:hidden tw:md:inline-flex">
+                <LinkButton to="/signup">สมัครสมาชิก</LinkButton>
               </span>
             </>
           )}
         </div>
+        {searchBoxVisibility && (
+          <div className="tw:absolute tw:inset-x-0 tw:top-full tw:border-b tw:border-line tw:bg-white tw:py-3 tw:lg:hidden">
+            <label className="tw:relative tw:mx-auto tw:mb-0 tw:block tw:max-w-2xl tw:px-4">
+              <span className="tw:sr-only">ค้นหา</span>
+              <IoIosSearch className="tw:pointer-events-none tw:absolute tw:left-7 tw:top-1/2 tw:size-5 tw:-translate-y-1/2 tw:text-muted" />
+              <input
+                type="search"
+                autoFocus
+                placeholder="ค้นหาบล็อก ผู้เขียน แท็ก แล้วกด Enter"
+                className="tw:h-11 tw:w-full tw:rounded-full tw:border tw:border-transparent tw:bg-surface tw:pl-10 tw:pr-4 tw:text-sm tw:text-ink tw:outline-none tw:transition-colors tw:focus:border-line tw:focus:bg-white"
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setSearchBoxVisibility(false);
+                  handleSearch(e);
+                }}
+              />
+            </label>
+          </div>
+        )}
       </nav>
     </header>
   );

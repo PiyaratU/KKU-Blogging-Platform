@@ -1,5 +1,5 @@
 import { cn } from "../ui/cn";
-import { PASTEL } from "../ui/colors";
+import { TILE_COLORS } from "../ui/colors";
 import { firstTag } from "../blogpost.component";
 import type { Post } from "../../types/post";
 
@@ -40,19 +40,24 @@ const CategoryTiles = ({ tags, posts = [], activeTag, onSelect }: CategoryTilesP
               onClick={() => onSelect(tag)}
               aria-pressed={active}
               className={cn(
-                "tw:flex tw:h-24 tw:items-center tw:gap-4 tw:rounded-2xl tw:border-0 tw:px-5 tw:text-left tw:transition tw:cursor-pointer tw:hover:-translate-y-0.5 tw:hover:shadow-md",
-                PASTEL[i % PASTEL.length], // ไล่สีตามลำดับ ให้ 6 กล่องไม่ซ้ำสีกัน
-                active && "tw:ring-2 tw:ring-violet-400 tw:ring-offset-2"
+                "tw:group tw:relative tw:flex tw:h-24 tw:items-center tw:gap-4 tw:overflow-hidden tw:rounded-2xl tw:border-0 tw:bg-linear-to-br tw:px-5 tw:text-left tw:transition tw:cursor-pointer tw:hover:-translate-y-0.5 tw:hover:shadow-lg",
+                TILE_COLORS[i % TILE_COLORS.length], // ไล่สีตามลำดับ ให้กล่องติดกันไม่ซ้ำสี
+                active && "tw:ring-2 tw:ring-current tw:ring-offset-2"
               )}
             >
-              <span className="tw:flex tw:size-14 tw:shrink-0 tw:items-center tw:justify-center tw:overflow-hidden tw:rounded-full tw:bg-white/70 tw:text-lg tw:font-semibold">
+              {/* วงกลมตกแต่งมุมขวา */}
+              <span
+                aria-hidden="true"
+                className="tw:pointer-events-none tw:absolute tw:-right-6 tw:-bottom-8 tw:size-24 tw:rounded-full tw:bg-white/30 tw:transition-transform tw:duration-300 tw:group-hover:scale-125"
+              />
+              <span className="tw:relative tw:flex tw:size-14 tw:shrink-0 tw:items-center tw:justify-center tw:overflow-hidden tw:rounded-full tw:bg-white/80 tw:text-lg tw:font-bold tw:shadow-sm tw:ring-2 tw:ring-white">
                 {cover ? (
                   <img src={cover} alt="" loading="lazy" className="tw:size-full tw:object-cover" />
                 ) : (
                   tag.charAt(0).toUpperCase()
                 )}
               </span>
-              <span className="tw:min-w-0 tw:truncate tw:text-base tw:font-semibold">{tag}</span>
+              <span className="tw:relative tw:min-w-0 tw:truncate tw:text-lg tw:font-semibold">{tag}</span>
             </button>
           );
         })}

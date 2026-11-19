@@ -9,6 +9,25 @@ export const PASTEL = [
   "tw:bg-amber-100 tw:text-amber-800",
   "tw:bg-rose-100 tw:text-rose-800",
   "tw:bg-teal-100 tw:text-teal-800",
+  "tw:bg-pink-100 tw:text-pink-800",
+  "tw:bg-orange-100 tw:text-orange-800",
+  "tw:bg-lime-100 tw:text-lime-800",
+  "tw:bg-indigo-100 tw:text-indigo-800",
+] as const;
+
+/**
+ * กล่องหมวดหมู่หน้าแรก — ไล่สีเข้มกว่า PASTEL หนึ่งขั้น ให้เห็นสีชัดแต่ยังเป็นพาสเทล
+ * เรียงให้กล่องที่อยู่ติดกันสีต่างกันชัด
+ */
+export const TILE_COLORS = [
+  "tw:from-violet-200 tw:to-fuchsia-100 tw:text-violet-900",
+  "tw:from-sky-200 tw:to-cyan-100 tw:text-sky-900",
+  "tw:from-amber-200 tw:to-yellow-100 tw:text-amber-900",
+  "tw:from-emerald-200 tw:to-lime-100 tw:text-emerald-900",
+  "tw:from-rose-200 tw:to-pink-100 tw:text-rose-900",
+  "tw:from-indigo-200 tw:to-sky-100 tw:text-indigo-900",
+  "tw:from-orange-200 tw:to-amber-100 tw:text-orange-900",
+  "tw:from-teal-200 tw:to-emerald-100 tw:text-teal-900",
 ] as const;
 
 /** ไล่สีพาสเทลอ่อนสำหรับรูปปกที่ไม่มีรูป */
@@ -38,6 +57,10 @@ export const PASTEL_TEXT = [
   "tw:text-amber-600",
   "tw:text-rose-600",
   "tw:text-teal-600",
+  "tw:text-pink-600",
+  "tw:text-orange-600",
+  "tw:text-lime-700",
+  "tw:text-indigo-600",
 ] as const;
 
 export const pastelTextFor = (text: string) => PASTEL_TEXT[hashIndex(text, PASTEL_TEXT.length)];
