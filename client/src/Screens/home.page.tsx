@@ -3,202 +3,145 @@ import HomeHero from "../components/home/HomeHero";
 import FeaturedPost from "../components/home/FeaturedPost";
 import CategoryTiles from "../components/home/CategoryTiles";
 import PickItem from "../components/home/PickItem";
+import PostRow from "../components/home/PostRow";
+import Pager from "../components/home/Pager";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Loader from "../components/loader.component";
 import { Post } from "../types/post";
-import BlogCard from "../components/blogpost.component";
 import MinimalBlogPost from "./nobanner-blog";
 import FeedSidebar from "../components/FeedSidebar";
 import NoDataMessage from "../components/nodata.component";
 import { filterPaginationData } from "../components/filter-pagination";
-import LoadMoreDataBtn from "../components/load-more.component";
 import { Button, LinkButton } from "../components/ui/Button";
 import { LuFileEdit } from "react-icons/lu";
 import { UserContext } from "../App";
+import { useSearchParams } from "react-router-dom";
+import { getTopTags } from "../components/home/topTags";
 import type { HomeBlogState as BlogState } from "../types/blog";
 
+const HOME = "หน้าหลัก";
+/** /posts/latest-blog ส่งครั้งละ 5 เรื่อง — หมวดหมู่ขอจำนวนเท่ากันจะได้เปลี่ยนหน้าแบบเดียวกัน */
+const PAGE_SIZE = 5;
+
+const getAuthHeaders = () => {
+  const userStr = sessionStorage.getItem("user");
+  if (!userStr) return {};
+  try {
+    const user = JSON.parse(userStr);
+    if (user?.access_token) {
+      return { Authorization: `Bearer ${user.access_token}`, "Content-Type": "application/json" };
+    }
+  } catch (err) {
+    console.error("Error parsing user data:", err);
+  }
+  return { "Content-Type": "application/json" };
+};
+
 const HomePage = () => {
-  const API_URL =
-    import.meta.env.REACT_APP_API_ENDPOINT ||
-    "https://kku-blog-server-ak2l.onrender.com";
+  const API_URL = import.meta.env.REACT_APP_API_ENDPOINT || "https://kku-blog-server-ak2l.onrender.com";
   const [recommend, setRecommend] = useState<BlogState | null>(null);
-  const [blogs, setBlogs] = useState<BlogState | null>(null);
-  const [uniqueBlogs, setUniqueBlogs] = useState<BlogState | null>(null);
   const [trendingBlogs, setTrendingBlogs] = useState<Post[] | null>(null);
-  const [pageState, setPageState] = useState("หน้าหลัก");
+  // หมวดที่เลือกเก็บใน URL (?tag=) — ลิงก์หมวดในส่วนท้ายเว็บพามาที่นี่ได้
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageState = searchParams.get("tag")?.toLowerCase() || HOME;
   const [allTags, setAllTags] = useState<string[]>([]);
+  /** หน้าแรกของฟีดหลัก — ใช้หาบทความเด่นและรูปของหมวด */
+  const [firstPage, setFirstPage] = useState<Post[]>([]);
+
+  // รายการที่กำลังแสดง — ทีละหน้า แทนที่ของเดิม (ไม่ต่อท้าย)
+  const [blogs, setBlogs] = useState<Post[] | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+
   const {
     userAuth: { access_token },
   } = useContext(UserContext);
 
-  const getUniqueTags = (posts: Post[]): string[] => {
-    const tagCount: Record<string, number> = {};
-
-    // นับจำนวนครั้งที่แต่ละแท็กถูกใช้
-    posts.forEach((post) => {
-      if (Array.isArray(post.tags)) {
-        // ตรวจสอบว่า tags เป็น array หรือไม่
-        post.tags.forEach((tag: string) => {
-          if (tag) {
-            tagCount[tag] = (tagCount[tag] || 0) + 1;
-          }
-        });
-      } else if (typeof post.tags === "string" && post.tags) {
-        // ถ้าเป็น string ให้แปลงเป็น array
-        tagCount[post.tags] = (tagCount[post.tags] || 0) + 1;
-      }
-    });
-
-    return Object.entries(tagCount)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .map(([tag]) => tag);
-  };
+  const isTagFeed = pageState !== HOME;
 
   // กดแท็กเดิมซ้ำ = กลับไปหน้าหลัก
   const loadBlogBycategory = (tag: string) => {
     const category = tag.toLowerCase();
     setBlogs(null);
-    setPageState(pageState === category ? "หน้าหลัก" : category);
+    setSearchParams(pageState === category ? {} : { tag: category }, { replace: true });
   };
 
-  const getAuthHeaders = () => {
-    const userStr = sessionStorage.getItem("user");
-    if (!userStr) return {};
-
+  const fetchPage = async (nextPage: number, scroll = false) => {
+    setLoadingPage(true);
     try {
-      const user = JSON.parse(userStr);
-      if (user?.access_token) {
-        return {
-          Authorization: `Bearer ${user.access_token}`,
-          "Content-Type": "application/json",
-        };
+      const { data } = isTagFeed
+        ? await axios.post(API_URL + "/search-blogs", { tag: pageState, page: nextPage, limit: PAGE_SIZE })
+        : await axios.post(API_URL + "/posts/latest-blog", { page: nextPage }, { headers: getAuthHeaders() });
+      const result: Post[] = data.blogs ?? [];
+
+      // หน้าถัดไปว่าง (จำนวนบล็อกลงตัวพอดี) — อยู่หน้าเดิม แค่ปิดปุ่มถัดไป
+      if (nextPage > 1 && result.length === 0) {
+        setHasMore(false);
+        return;
       }
+
+      setBlogs(result);
+      setPage(nextPage);
+      setHasMore(isTagFeed ? result.length === PAGE_SIZE : Boolean(data.hasMore));
+      if (!isTagFeed && nextPage === 1) {
+        setFirstPage(result);
+        setAllTags(getTopTags(result));
+      }
+      if (scroll) listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
-      console.error("Error parsing user data:", err);
+      console.log(err);
+      if (nextPage === 1) setBlogs([]);
+    } finally {
+      setLoadingPage(false);
     }
-
-    return { "Content-Type": "application/json" };
   };
 
-  const fetchLatestBlogs = ({ page = 1 }) => {
-    const headers = getAuthHeaders();
+  // เปิดหน้ามาที่หมวดเลย (?tag=) — ยังต้องมีบล็อกล่าสุดหน้าแรกไว้ทำแถบหมวดหมู่
+  useEffect(() => {
+    if (!isTagFeed) return;
     axios
-      .post(API_URL + "/posts/latest-blog", { page }, { headers })
-      .then(async ({ data }) => {
-        console.log(data.blogs);
-
-        let formatData = await filterPaginationData({
-          state: blogs,
-          data: data.blogs,
-          page,
-          countRoute: "/posts/all-latest-blogs-count",
-        });
-        const uniqueTags = getUniqueTags(data.blogs);
-        setAllTags(uniqueTags);
-        setBlogs(formatData);
-
-        console.log(formatData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const fetchBlogsByCategory = ({ page = 1 }) => {
-    axios
-      .post(API_URL + "/search-blogs", { tag: pageState, page })
-      .then(async ({ data }) => {
-        let formatData = await filterPaginationData({
-          state: blogs,
-          data: data.blogs,
-          page,
-          countRoute: "/search-blogs-count",
-          data_to_send: { tag: pageState },
-        });
-
-        setBlogs(formatData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const fetchTrendingBlogs = () => {
-    axios
-      .get(API_URL + "/posts/trending-blogs")
+      .post(API_URL + "/posts/latest-blog", { page: 1 }, { headers: getAuthHeaders() })
       .then(({ data }) => {
-        setTrendingBlogs(data.blogs);
+        setFirstPage(data.blogs ?? []);
+        setAllTags(getTopTags(data.blogs ?? []));
       })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+      .catch((err) => console.log(err));
+  }, []);
 
   // recommend
   useEffect(() => {
-    const headers = getAuthHeaders();
-
     axios
-      .post(API_URL + "/posts/blog-recommends", {}, { headers })
+      .post(API_URL + "/posts/blog-recommends", {}, { headers: getAuthHeaders() })
       .then(async ({ data }) => {
-        let formatData = await filterPaginationData({
+        const formatData = await filterPaginationData({
           state: recommend,
           data: data.blogs,
           page: 1,
           countRoute: "/posts/all-latest-blogs-count",
         });
-
         setRecommend(formatData);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
-    if (recommend?.result && blogs?.result) {
-      const combinedBlogs = [...recommend.result, ...blogs.result];
-
-      const uniqueBlogsResult = combinedBlogs.reduce((acc, blog) => {
-        if (!acc.some((b) => b.blog_id === blog.blog_id)) {
-          acc.push(blog);
-        }
-        return acc;
-      }, [] as Post[]);
-
-      const totalDocs = uniqueBlogsResult.length;
-
-      const page = recommend?.page ?? blogs?.page ?? 1;
-
-      setUniqueBlogs({
-        result: uniqueBlogsResult,
-        totalDocs,
-        page,
-      });
-    } else {
-      setUniqueBlogs(blogs);
-    }
-  }, [recommend, blogs]);
-
-  useEffect(() => {
-
-    if (pageState === "หน้าหลัก") {
-      fetchLatestBlogs({ page: 1 });
-    } else {
-      fetchBlogsByCategory({ page: 1 });
-    }
-
+    fetchPage(1);
     if (!trendingBlogs) {
-      fetchTrendingBlogs();
+      axios
+        .get(API_URL + "/posts/trending-blogs")
+        .then(({ data }) => setTrendingBlogs(data.blogs))
+        .catch((err) => console.log(err));
     }
   }, [pageState]);
 
-  const isTagFeed = pageState !== "หน้าหลัก";
-
-  // บทความเด่น = บล็อกที่ถูกใจมากที่สุด (ยังไม่มี → บล็อกล่าสุด)
-  const featured = trendingBlogs?.[0] ?? uniqueBlogs?.result?.[0] ?? null;
+  // บทความเด่น = บล็อกที่มาแรงที่สุด (เอาข้อมูลเต็มจากรายการอื่นเพื่อให้มีรูป/เกริ่น) → ไม่มีใช้บล็อกล่าสุด
+  const known = [...firstPage, ...(recommend?.result ?? [])];
+  const topTrending = trendingBlogs?.[0];
+  const featured =
+    known.find((b) => topTrending && b.blog_id === topTrending.blog_id) ?? known[0] ?? topTrending ?? null;
   const picks = recommend?.result?.slice(0, 4) ?? [];
 
   const popularList =
@@ -229,13 +172,13 @@ const HomePage = () => {
 
         {!isTagFeed && featured && <FeaturedPost blog={featured} />}
 
-        <CategoryTiles tags={allTags} activeTag={pageState} onSelect={loadBlogBycategory} />
+        <CategoryTiles tags={allTags} posts={known} activeTag={pageState} onSelect={loadBlogBycategory} />
 
         <div className="tw:mt-16 tw:flex tw:gap-12 tw:xl:gap-16">
           {/* บล็อกล่าสุด / บล็อกในหมวดที่เลือก */}
-          <div className="tw:min-w-0 tw:flex-1">
+          <div ref={listRef} className="tw:min-w-0 tw:flex-1 tw:scroll-mt-28">
             <div className="tw:flex tw:items-baseline tw:justify-between tw:gap-4">
-              <h2 className="tw:m-0 tw:text-2xl tw:font-semibold tw:text-ink">
+              <h2 className="tw:m-0 tw:text-2xl tw:font-semibold tw:text-ink tw:md:text-3xl">
                 {isTagFeed ? `หมวด: ${pageState}` : "บล็อกล่าสุด"}
               </h2>
               {isTagFeed && (
@@ -247,10 +190,10 @@ const HomePage = () => {
 
             {blogs === null ? (
               <Loader />
-            ) : uniqueBlogs?.result.length ? (
-              <div className="tw:divide-y tw:divide-line">
-                {uniqueBlogs.result.map((blog, i) => (
-                  <BlogCard key={blog.blog_id ?? i} content={blog} author={blog.author} />
+            ) : blogs.length ? (
+              <div className={loadingPage ? "tw:divide-y tw:divide-line tw:opacity-60" : "tw:divide-y tw:divide-line"}>
+                {blogs.map((blog, i) => (
+                  <PostRow key={blog.blog_id ?? i} blog={blog} />
                 ))}
               </div>
             ) : isTagFeed ? (
@@ -280,7 +223,9 @@ const HomePage = () => {
               />
             )}
 
-            <LoadMoreDataBtn state={blogs} fetchDataFun={isTagFeed ? fetchBlogsByCategory : fetchLatestBlogs} />
+            {blogs?.length ? (
+              <Pager page={page} hasMore={hasMore} loading={loadingPage} onChange={(p) => fetchPage(p, true)} />
+            ) : null}
 
             {/* จอเล็กไม่มีแถบข้าง — แสดงยอดนิยมต่อท้ายรายการ */}
             <div className="tw:mt-12 tw:lg:hidden">

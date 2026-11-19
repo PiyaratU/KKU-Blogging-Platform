@@ -1,4 +1,6 @@
-import BlogCard from "../components/blogpost.component";
+import { useState } from "react";
+import PostRow from "../components/home/PostRow";
+import Pager from "../components/home/Pager";
 import MinimalBlogPost from "../Screens/nobanner-blog";
 import FeedSidebar from "../components/FeedSidebar";
 import HomeHero from "../components/home/HomeHero";
@@ -45,20 +47,24 @@ const sample = (i: number) =>
 const blogs = [0, 1, 2, 3, 4, 5].map(sample);
 const tags = TAGS.map((t) => t[0]);
 
-const UiPreview = () => (
+const UiPreview = () => {
+  const [page, setPage] = useState(1);
+  const pageBlogs = page === 1 ? blogs.slice(0, 5) : blogs.slice(5);
+  return (
   <div className="tw:mx-auto tw:max-w-7xl tw:px-4 tw:pb-20 tw:md:px-8">
     <HomeHero />
     <FeaturedPost blog={blogs[0]} />
-    <CategoryTiles tags={tags} onSelect={() => {}} />
+    <CategoryTiles tags={tags} posts={blogs} onSelect={() => {}} />
 
     <div className="tw:mt-16 tw:flex tw:gap-12 tw:xl:gap-16">
       <div className="tw:min-w-0 tw:flex-1">
-        <h2 className="tw:m-0 tw:text-2xl tw:font-semibold tw:text-ink">บล็อกล่าสุด</h2>
+        <h2 className="tw:m-0 tw:text-2xl tw:font-semibold tw:text-ink tw:md:text-3xl">บล็อกล่าสุด</h2>
         <div className="tw:divide-y tw:divide-line">
-          {blogs.map((b) => (
-            <BlogCard key={b.blog_id} content={b} author={b.author} />
+          {pageBlogs.map((b) => (
+            <PostRow key={b.blog_id} blog={b} />
           ))}
         </div>
+        <Pager page={page} hasMore={page === 1} onChange={setPage} />
         <h3 className="tw:mt-12 tw:text-sm tw:font-semibold tw:text-ink">ตอนยังไม่มีบล็อก</h3>
         <NoDataMessage message="ยังไม่มีบล็อกที่เผยแพร่" hint="มาเป็นคนแรกที่แบ่งปันเรื่องราว" />
       </div>
@@ -84,6 +90,7 @@ const UiPreview = () => (
       />
     </div>
   </div>
-);
+  );
+};
 
 export default UiPreview;

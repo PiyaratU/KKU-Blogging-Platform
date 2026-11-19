@@ -18,6 +18,12 @@ import { cn } from "../components/ui/cn";
 
 const NOTI_FILTERS = ["ทั้งหมด", "ยังไม่อ่าน", "อ่านแล้ว"] as const;
 
+/** ลิงก์เมนูฝั่งขวา (จอใหญ่) — หน้าช่วยเหลือแยกตามสถานะเข้าสู่ระบบ */
+const MENU_LINKS = (loggedIn: boolean) => [
+  { to: "/homepage", label: "หน้าแรก" },
+  { to: loggedIn ? "/helpcentre" : "/help-notlogin", label: "ช่วยเหลือ" },
+];
+
 const iconButton =
   "tw:relative tw:inline-flex tw:size-10 tw:items-center tw:justify-center tw:rounded-full tw:border-0 tw:bg-transparent tw:text-ink-soft tw:transition-colors tw:hover:bg-surface tw:hover:text-ink tw:cursor-pointer";
 
@@ -114,6 +120,7 @@ function Navbar() {
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const query = e.currentTarget.value.trim();
     if (e.key === "Enter" && query.length) {
+      setSearchBoxVisibility(false);
       navigate(`/search/${query}`);
     }
   };
@@ -128,42 +135,57 @@ function Navbar() {
 
   return (
     <header className="tw:sticky tw:top-0 tw:z-40 tw:border-b tw:border-line tw:bg-white/90 tw:backdrop-blur">
-      <nav className="tw:mx-auto tw:flex tw:h-16 tw:max-w-7xl tw:items-center tw:gap-4 tw:px-4 tw:md:px-8">
-        <Link to="/" className="tw:flex tw:shrink-0 tw:items-center" aria-label="หน้าแรก">
-          <img src={logoKKU} alt="KKU Blogging Platform" className="tw:h-8 tw:w-auto" />
-        </Link>
-
-        {/* ช่องค้นหา — จอเล็กซ่อนไว้ กดแว่นขยายถึงเปิดเป็นแถบใต้ navbar */}
-        <div
-          className={cn(
-            "tw:md:static tw:md:block tw:md:w-80 tw:lg:w-96 tw:md:p-0 tw:md:border-0",
-            searchBoxVisibility
-              ? "tw:absolute tw:inset-x-0 tw:top-full tw:block tw:border-b tw:border-line tw:bg-white tw:px-4 tw:py-3"
-              : "tw:hidden"
-          )}
-        >
-          <label className="tw:relative tw:m-0 tw:block">
-            <span className="tw:sr-only">ค้นหา</span>
-            <IoIosSearch className="tw:pointer-events-none tw:absolute tw:left-3 tw:top-1/2 tw:size-5 tw:-translate-y-1/2 tw:text-muted" />
-            <input
-              type="search"
-              placeholder="ค้นหาบล็อก ผู้เขียน แท็ก"
-              className="tw:h-10 tw:w-full tw:rounded-full tw:border tw:border-transparent tw:bg-surface tw:pl-10 tw:pr-4 tw:text-sm tw:text-ink tw:outline-none tw:transition-colors tw:focus:border-line tw:focus:bg-white"
-              onKeyDown={handleSearch}
-            />
-          </label>
-        </div>
-
-        <div className="tw:ml-auto tw:flex tw:items-center tw:gap-1 tw:md:gap-2">
+      {/* 3 คอลัมน์: ซ้าย = ค้นหา · กลาง = โลโก้ · ขวา = เมนู + ปุ่มของผู้ใช้ */}
+      <nav className="tw:mx-auto tw:grid tw:h-16 tw:max-w-7xl tw:grid-cols-[1fr_auto_1fr] tw:items-center tw:gap-4 tw:px-4 tw:md:h-20 tw:md:px-8">
+        <div className="tw:flex tw:items-center tw:gap-1">
           <button
             type="button"
-            className={cn(iconButton, "tw:md:hidden")}
+            className={iconButton}
             onClick={() => setSearchBoxVisibility((v) => !v)}
             aria-label="ค้นหา"
             aria-expanded={searchBoxVisibility}
           >
             <IoIosSearch className="tw:size-5" />
           </button>
+          <span className="tw:hidden tw:text-sm tw:text-muted tw:lg:inline">ค้นหาบล็อก</span>
+        </div>
+
+        <Link to="/homepage" className="tw:m-0 tw:flex tw:items-center tw:justify-center" aria-label="หน้าแรก">
+          <img src={logoKKU} alt="KKU Blogging Platform" className="tw:h-8 tw:w-auto tw:md:h-10" />
+        </Link>
+
+        {/* ช่องค้นหา — กดแว่นขยายแล้วเปิดเป็นแถบใต้ navbar */}
+        {searchBoxVisibility && (
+          <div className="tw:absolute tw:inset-x-0 tw:top-full tw:border-b tw:border-line tw:bg-white tw:py-3">
+            <label className="tw:relative tw:mx-auto tw:mb-0 tw:block tw:max-w-2xl tw:px-4">
+              <span className="tw:sr-only">ค้นหา</span>
+              <IoIosSearch className="tw:pointer-events-none tw:absolute tw:left-7 tw:top-1/2 tw:size-5 tw:-translate-y-1/2 tw:text-muted" />
+              <input
+                type="search"
+                autoFocus
+                placeholder="ค้นหาบล็อก ผู้เขียน แท็ก แล้วกด Enter"
+                className="tw:h-11 tw:w-full tw:rounded-full tw:border tw:border-transparent tw:bg-surface tw:pl-10 tw:pr-4 tw:text-sm tw:text-ink tw:outline-none tw:transition-colors tw:focus:border-line tw:focus:bg-white"
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setSearchBoxVisibility(false);
+                  handleSearch(e);
+                }}
+              />
+            </label>
+          </div>
+        )}
+
+        <div className="tw:flex tw:items-center tw:justify-end tw:gap-1 tw:md:gap-2">
+          <span className="tw:mr-2 tw:hidden tw:items-center tw:gap-6 tw:lg:inline-flex">
+            {MENU_LINKS(!!access_token).map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="tw:text-sm tw:font-medium tw:text-ink-soft tw:no-underline tw:transition-colors tw:hover:text-primary-strong"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </span>
 
           {access_token ? (
             <>
