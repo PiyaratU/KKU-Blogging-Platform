@@ -1,13 +1,16 @@
 import type { SxProps, Theme } from "@mui/material";
 
-/** ปุ่มดำทรงแคปซูลเต็มความกว้าง — ใช้ในหน้าลืมรหัสผ่าน / ตั้งรหัสผ่านใหม่ */
+/** ปุ่มหลักทรงแคปซูลเต็มความกว้าง (หน้าลืมรหัสผ่าน / ตั้งรหัสผ่านใหม่) — สีเดียวกับ <Button> ของเว็บ */
 export const pillButtonSx: SxProps<Theme> = {
-  backgroundColor: "#000",
-  color: "#fff",
+  backgroundColor: "#e4d4f7",
+  color: "#6d3a9c",
   textTransform: "none",
+  fontWeight: 500,
   padding: "10px 0",
-  borderRadius: "50px",
+  borderRadius: "9999px",
+  boxShadow: "none",
   "&:hover": {
-    backgroundColor: "#181818",
+    backgroundColor: "#d8c2f2",
+    boxShadow: "none",
   },
 };

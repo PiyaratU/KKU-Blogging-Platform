@@ -185,7 +185,7 @@ function Navbar() {
           {access_token ? (
             <>
               <span className="tw:mr-1 tw:hidden tw:md:inline-flex">
-                <LinkButton to="/editor" size="sm">
+                <LinkButton to="/editor">
                   <LuFileEdit className="tw:size-4" />
                   เขียน
                 </LinkButton>
@@ -276,7 +276,7 @@ function Navbar() {
             <>
               {/* จอเล็ก: ปุ่มเข้าสู่ระบบปุ่มเดียว · จอใหญ่: เข้าสู่ระบบ (เรียบ) + สมัครสมาชิก (ปุ่มหลัก) */}
               <span className="tw:md:hidden">
-                <LinkButton to="/signin" size="sm">
+                <LinkButton to="/signin">
                   เข้าสู่ระบบ
                 </LinkButton>
               </span>

@@ -121,3 +121,59 @@ section {
     padding-right: 10vw;
   }
 }
+/* ═══════════════════════════════════════════════════════════════════════════
+ * ปุ่มแบบเก่า (btn-dark / btn-light / react-bootstrap <Button>) — ให้หน้าตาเหมือน <Button> ใน components/ui/Button.tsx
+ * :not(#\#) เพิ่มน้ำหนัก selector ให้ชนะ bootstrap และ CSS ของแต่ละหน้าที่โหลดทีหลัง (สไตล์ inline ยังชนะ)
+ * ═══════════════════════════════════════════════════════════════════════════ */
+:is(.btn, .btn-dark, .btn-light, .btn-primary, .btn-secondary, .btn-cancel, .btn-danger, .btn-success):not(#\#) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-transform: none;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+:is(.btn-dark, .btn-primary, .btn-success):not(#\#) {
+  background-color: #e4d4f7;
+  color: #6d3a9c;
+}
+:is(.btn-dark, .btn-primary, .btn-success):not(#\#):hover {
+  background-color: #d8c2f2;
+  color: #6d3a9c;
+}
+:is(.btn-light, .btn-secondary, .btn-cancel):not(#\#) {
+  background-color: #fff;
+  border-color: #ebebeb;
+  color: #151111;
+}
+:is(.btn-light, .btn-secondary, .btn-cancel):not(#\#):hover {
+  background-color: #f5effc;
+  border-color: #e4d4f7;
+  color: #151111;
+}
+.btn-danger:not(#\#) {
+  background-color: #ffe4e6; /* rose-100 */
+  color: #be123c; /* rose-700 */
+}
+.btn-danger:not(#\#):hover {
+  background-color: #fecdd3; /* rose-200 */
+  color: #be123c;
+}
+:is(.btn, .btn-dark, .btn-light, .btn-primary, .btn-secondary, .btn-cancel, .btn-danger, .btn-success):not(#\#):focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #e4d4f7;
+}
+:is(.btn, .btn-dark, .btn-light, .btn-primary, .btn-secondary, .btn-cancel, .btn-danger, .btn-success):not(#\#):disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ReadMoreLink } from "../ui/Button";
 import { FaUserGroup } from "react-icons/fa6";
 import Cover from "../ui/Cover";
 import { pastelTextFor } from "../ui/colors";
@@ -44,12 +45,7 @@ const PostRow = ({ blog }: { blog: Post }) => {
 
         {des && <p className="tw:mt-4 tw:mb-0 tw:line-clamp-3 tw:text-base tw:leading-relaxed tw:text-muted">{des}</p>}
 
-        <Link
-          to={`/blog/${id}`}
-          className="tw:mt-5 tw:inline-block tw:border-b-2 tw:border-ink tw:pb-0.5 tw:text-sm tw:font-semibold tw:text-ink tw:no-underline tw:transition-colors tw:hover:border-primary-strong tw:hover:text-primary-strong"
-        >
-          อ่านต่อ
-        </Link>
+        <ReadMoreLink to={`/blog/${id}`} className="tw:mt-5" />
       </div>
     </article>
   );

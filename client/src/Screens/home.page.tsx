@@ -182,7 +182,7 @@ const HomePage = () => {
                 {isTagFeed ? `หมวด: ${pageState}` : "บล็อกล่าสุด"}
               </h2>
               {isTagFeed && (
-                <Button variant="ghost" size="sm" onClick={() => loadBlogBycategory(pageState)}>
+                <Button variant="ghost" onClick={() => loadBlogBycategory(pageState)}>
                   ดูทั้งหมด
                 </Button>
               )}

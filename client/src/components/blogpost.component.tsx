@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ReadMoreLink } from "./ui/Button";
 import { FaRegHeart, FaRegCommentDots } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import Avatar from "./ui/Avatar";
@@ -74,12 +75,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ content, author }) => {
             <FaRegCommentDots className="tw:size-3.5 tw:text-sky-300" />
             {total_comments}
           </span>
-          <Link
-            to={`/blog/${id}`}
-            className="tw:ml-auto tw:border-b tw:border-ink-soft tw:pb-0.5 tw:text-sm tw:font-medium tw:text-ink tw:no-underline tw:hover:border-primary-strong tw:hover:text-primary-strong"
-          >
-            อ่านต่อ
-          </Link>
+          <ReadMoreLink to={`/blog/${id}`} className="tw:ml-auto" />
         </div>
       </div>
     </article>

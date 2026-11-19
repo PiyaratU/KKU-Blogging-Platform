@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Cover from "../ui/Cover";
 import Avatar from "../ui/Avatar";
-import { LinkButton } from "../ui/Button";
+import { ReadMoreLink } from "../ui/Button";
 import { pastelTextFor } from "../ui/colors";
 import { formatThaiDate } from "../blogpost.component";
 import type { Post } from "../../types/post";
@@ -33,9 +33,7 @@ const FeaturedPost = ({ blog }: { blog: Post }) => {
         </Link>
         {des && <p className="tw:mt-4 tw:mb-0 tw:line-clamp-3 tw:text-base tw:leading-relaxed tw:text-muted">{des}</p>}
         <div className="tw:mt-6 tw:flex tw:flex-wrap tw:items-center tw:gap-4">
-          <LinkButton to={`/blog/${id}`} variant="secondary">
-            อ่านต่อ
-          </LinkButton>
+          <ReadMoreLink to={`/blog/${id}`} />
           {author && (
             <span className="tw:flex tw:items-center tw:gap-2 tw:text-sm tw:text-ink-soft">
               <Avatar src={author.profile_picture} name={author.fullname} size="xs" />

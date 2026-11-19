@@ -174,7 +174,7 @@ const UserAuthForm: React.FC<LoginPageProps> = ({ type }) => {
 
           <button
             className="btn-dark center"
-            style={{ display: "block", margin: "0 auto", marginTop: "3.5rem" }}
+            style={{ display: "flex", margin: "3.5rem auto 0", minWidth: "10rem" }}
             type="submit"
           >
             {type}
@@ -197,7 +197,8 @@ const UserAuthForm: React.FC<LoginPageProps> = ({ type }) => {
           </div>
 
           <button
-            className="btn-dark button-google center"
+            className="btn-light button-google center"
+            style={{ display: "flex" }}
             onClick={handleGoogleAuth}
           >
             <img
@@ -205,7 +206,7 @@ const UserAuthForm: React.FC<LoginPageProps> = ({ type }) => {
               alt="googleIcon"
               style={{ width: "1.25rem", height: "auto" }}
             />
-            continue with google
+            ดำเนินการต่อด้วย Google
           </button>
 
           {type === "เข้าสู่ระบบ" ? (
