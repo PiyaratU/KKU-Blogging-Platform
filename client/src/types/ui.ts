@@ -60,11 +60,6 @@ export interface NoDataMessageProps {
   compact?: boolean;
 }
 
-// จาก Navbar/Navbar1.tsx
-export interface Navbar1Props {
-  children?: ReactNode;
-}
-
 // จาก Screens/firstpage.tsx
 export interface SplitTextProps {
   text: string;

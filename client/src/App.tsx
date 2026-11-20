@@ -6,7 +6,8 @@ import {
   Outlet,
   Navigate,
 } from "react-router-dom";
-import LoginPage from "./Screens/login";
+// สไตล์รวมของทั้งเว็บที่เคยมากับหน้า /login และ navbar เก่า (มีกฎ * / input / main) — ยังต้องโหลดไว้ ลำดับเดิม
+import "./misc/login.css";
 import HomePage from "./Screens/home.page";
 import FirstPage from "./Screens/firstpage";
 import EditProfile from "./Screens/edit-profile.page";
@@ -18,7 +19,7 @@ import ResetPassword from "./Screens/Admin/ResetPassword";
 import ResetPasswordUser from "./Screens/ResetPasswordUser";
 import Chat from "./Screens/chat";
 import { ChatContextProvider } from "./Screens/ChatContext";
-import Navbar2 from "./Navbar/Navbar1";
+import "./Navbar/navbar1.css";
 import Navbar from "./Navbar/Navbar";
 import SiteFooter from "./components/SiteFooter";
 import HelpCentre from "./Screens/helpcentre";
@@ -181,7 +182,7 @@ function App() {
             <Route path="/help-notlogin" element={<Helpnotlog />} />
           </Route>
           <Route path="/" element={<FirstPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<Navigate to="/signin" replace />} />
           <Route path="/admin/register" element={<RegisterAdmin />} />
           <Route path="/admin/login" element={<LoginAdmin type="admin" />} />
           <Route path="/admin/" element={<RegisterAdmin />} />
@@ -214,7 +215,6 @@ function App() {
             element={<ResetPasswordUser />}
           />
           <Route path="/chats" element={<Chat />} />
-          <Route path="/nav" element={<Navbar2 />} />
         </Routes>
       </ChatContextProvider>
     </UserContext.Provider>
