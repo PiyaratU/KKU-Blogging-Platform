@@ -7,9 +7,11 @@ const {
   scanBadWords,
 } = require("@sit-sandbox/thai-bad-words");
 const BadWordModel = require("../models/badword");
+const { connectDB } = require("./db");
 
 async function loadBadWordsFromDB() {
   try {
+    await connectDB(); // รอต่อ DB ก่อน (โหลดตอนเปิด server — บน Vercel อาจยังต่อไม่เสร็จ)
     const badwordGroups = await BadWordModel.find();
     const allBadWords = badwordGroups.flatMap((group) => group.words);
     const currentBadWords = getBadWords();

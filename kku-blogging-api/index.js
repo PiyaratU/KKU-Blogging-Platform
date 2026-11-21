@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -10,10 +9,10 @@ const { verifyGoogleAccessToken, GoogleAuthError } = require("./utils/googleAuth
 const jwt = require("jsonwebtoken");
 const http = require("http");
 const { attachSocket } = require("./socket.js");
+const { connectDB } = require("./utils/db");
 const app = express();
 const port = process.env.PORT || 3005;
 
-const uri = process.env.ATLAS_URI;
 
 // เว็บที่เรียก API / socket ได้ — เว็บผู้ใช้ (FRONTEND_ENDPOINT) + เว็บผู้ดูแลระบบ (ADMIN_FRONTEND_ENDPOINT)
 // โดเมนใหม่ตั้งใน env ไม่ต้องแก้โค้ด (หลายโดเมนคั่นด้วย ,)
@@ -43,6 +42,17 @@ app.use(
 
 app.use(cookieParser());
 app.use(express.json());
+
+// รอต่อ DB ให้เสร็จก่อนทำ request (สำคัญบน Vercel — cold start แล้ว query ก่อนต่อเสร็จจะ timeout)
+app.use(async (req, res, next) => {
+    if (req.method === "OPTIONS") return next();
+    try {
+        await connectDB();
+        next();
+    } catch {
+        res.status(503).json({ error: "เชื่อมต่อฐานข้อมูลไม่ได้ ลองใหม่อีกครั้ง" });
+    }
+});
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -382,11 +392,7 @@ if (!process.env.VERCEL) {
         console.log(`Server (API + socket) is running on port ${port}`);
     });
 }
-mongoose
-    .connect(uri)
-    .then(() => {
-        console.log("MongoDB connection established");
-    })
-    .catch((error) => console.log("MongoDB connection failed: ", error.message));
+// เริ่มต่อ DB ตั้งแต่เปิด server (request แรกจะได้ไม่ต้องรอนาน) — ต่อไม่ได้ก็ลองใหม่ตอนมี request
+connectDB().catch(() => {});
 
 module.exports = app;
