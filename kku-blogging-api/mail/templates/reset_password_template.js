@@ -51,7 +51,7 @@ const resetPasswordTemplate = (name, resetLink, referenceId) => {
         <mj-section background-color="#ffffff" padding="10px" border-radius="0 0 8px 8px">
           <mj-column>
             <mj-text font-size="12px" color="#888888" align="center" font-family="Kanit, sans-serif">
-              © 2024 KKU Bloging Platform. All rights reserved.
+              © ${new Date().getFullYear()} KKU Blogging Platform
             </mj-text>
           </mj-column>
         </mj-section>

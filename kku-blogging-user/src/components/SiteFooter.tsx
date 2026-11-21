@@ -74,7 +74,7 @@ const SiteFooter = () => {
         </div>
       </div>
       <div className="tw:border-t tw:border-line tw:py-5 tw:text-center tw:text-xs tw:text-muted">
-        © {new Date().getFullYear()} KKU Blogging Platform · มหาวิทยาลัยขอนแก่น
+        © {new Date().getFullYear()} KKU Blogging Platform · PiyaratU.
       </div>
     </footer>
   );
