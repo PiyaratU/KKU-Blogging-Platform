@@ -3,7 +3,7 @@
 interface ImportMetaEnv {
   /** URL ของ API server เช่น http://localhost:3005 */
   readonly REACT_APP_API_ENDPOINT?: string;
-  /** URL ของ socket server เช่น http://localhost:3004 */
+  /** URL ของ socket (อยู่ใน API แล้ว) — ไม่ตั้ง = ใช้ REACT_APP_API_ENDPOINT */
   readonly REACT_APP_SOCKET_ENDPOINT?: string;
   readonly REACT_APP_FIREBASE_API_KEY?: string;
   readonly REACT_APP_FIREBASE_AUTH_DOMAIN?: string;

@@ -7,14 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "socket": "npm --prefix socket start",
-    "dev:all": "concurrently -k -i -n api,socket -c blue,magenta \"npm run dev\" \"npm run socket\"",
     "at-deploy": "git add . && git commit -m 'at-deploy' && git push"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "socket/*"
-    ]
   },
   "keywords": [],
   "author": "",
@@ -35,10 +28,10 @@
     "multer": "^1.4.5-lts.1",
     "nanoid": "^3.3.20",
     "nodemailer": "^6.9.14",
+    "socket.io": "^4.8.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "concurrently": "^9.2.5",
     "nodemon": "^3.1.4"
   }
 }

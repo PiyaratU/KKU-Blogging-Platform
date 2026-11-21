@@ -71,10 +71,11 @@ export const ChatContextProvider: React.FC<ChatContextProviderProps> = ({ childr
   };
 
   useEffect(() => {
+    // socket อยู่ใน API แล้ว (พอร์ตเดียวกัน) — ไม่ตั้ง REACT_APP_SOCKET_ENDPOINT = ใช้ URL ของ API
     const newSocket = io(
-      import.meta.env.REACT_APP_SOCKET_ENDPOINT || "https://kku-socket.onrender.com"
-      // "https://kku-blog-server-ak2l.onrender.com" ||
-      // "https://kku-for-deploy.onrender.com"
+      import.meta.env.REACT_APP_SOCKET_ENDPOINT ||
+        import.meta.env.REACT_APP_API_ENDPOINT ||
+        "https://kku-blog-server-ak2l.onrender.com"
     );
     setSocket(newSocket);
 

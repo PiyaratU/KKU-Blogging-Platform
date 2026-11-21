@@ -8,28 +8,33 @@ const multer = require("multer");
 const cookieParser = require("cookie-parser");
 const { verifyGoogleAccessToken, GoogleAuthError } = require("./utils/googleAuth");
 const jwt = require("jsonwebtoken");
+const http = require("http");
+const { attachSocket } = require("./socket.js");
 const app = express();
 const port = process.env.PORT || 3005;
 
 const uri = process.env.ATLAS_URI;
 
+// เว็บที่เรียก API / socket ได้ — เว็บผู้ใช้ (FRONTEND_ENDPOINT) + เว็บผู้ดูแลระบบ (ADMIN_FRONTEND_ENDPOINT)
+// โดเมนใหม่ตั้งใน env ไม่ต้องแก้โค้ด (หลายโดเมนคั่นด้วย ,)
+const allowedOrigins = [
+    "https://kku-client.vercel.app",
+    "http://localhost:3000",
+    "https://www.kkublogging.com",
+    "https://kkublogging.com",
+    "http://localhost:3006",
+    ...[process.env.FRONTEND_ENDPOINT, process.env.ADMIN_FRONTEND_ENDPOINT]
+        .join(",")
+        .split(",")
+        .map((url) => url.trim().replace(/\/$/, ""))
+        .filter(Boolean),
+];
+
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(
     cors({
-        // เว็บผู้ใช้ (FRONTEND_ENDPOINT) + เว็บผู้ดูแลระบบ (ADMIN_FRONTEND_ENDPOINT) — โดเมนใหม่บน Vercel ตั้งใน env ไม่ต้องแก้โค้ด
-        origin: [
-            "https://kku-client.vercel.app",
-            "http://localhost:3000",
-            "https://www.kkublogging.com",
-            "https://kkublogging.com",
-            "http://localhost:3006",
-            ...[process.env.FRONTEND_ENDPOINT, process.env.ADMIN_FRONTEND_ENDPOINT]
-                .join(",")
-                .split(",")
-                .map((url) => url.trim().replace(/\/$/, ""))
-                .filter(Boolean),
-        ],
+        origin: allowedOrigins,
         credentials: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"]
@@ -368,10 +373,13 @@ app.post("/search-users", (req, res) => {
         });
 });
 
-// บน Vercel (serverless) ไม่ต้อง listen เอง — Vercel เรียก app ที่ export ไว้ด้านล่าง
+// API + แชทเรียลไทม์ (socket.io) ใช้ server / พอร์ตเดียวกัน
+// บน Vercel (serverless) ไม่ listen เอง — Vercel เรียก app ที่ export ไว้ด้านล่าง และแชทเรียลไทม์จะใช้ไม่ได้ (ต้อง deploy บน Render)
 if (!process.env.VERCEL) {
-    app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
+    const server = http.createServer(app);
+    attachSocket(server, allowedOrigins);
+    server.listen(port, () => {
+        console.log(`Server (API + socket) is running on port ${port}`);
     });
 }
 mongoose
