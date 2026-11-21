@@ -17,14 +17,15 @@ app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(
     cors({
-        // เว็บผู้ใช้ (kku-blogging-user) + เว็บผู้ดูแลระบบ (kku-blogging-admin — deploy แยก ตั้ง URL ใน ADMIN_FRONTEND_ENDPOINT)
+        // เว็บผู้ใช้ (FRONTEND_ENDPOINT) + เว็บผู้ดูแลระบบ (ADMIN_FRONTEND_ENDPOINT) — โดเมนใหม่บน Vercel ตั้งใน env ไม่ต้องแก้โค้ด
         origin: [
             "https://kku-client.vercel.app",
             "http://localhost:3000",
             "https://www.kkublogging.com",
             "https://kkublogging.com",
             "http://localhost:3006",
-            ...(process.env.ADMIN_FRONTEND_ENDPOINT || "")
+            ...[process.env.FRONTEND_ENDPOINT, process.env.ADMIN_FRONTEND_ENDPOINT]
+                .join(",")
                 .split(",")
                 .map((url) => url.trim().replace(/\/$/, ""))
                 .filter(Boolean),
@@ -119,7 +120,6 @@ const formDatatoSend = (user) => {
     };
 };
 
-module.exports = formDatatoSend;
 
 app.post("/google-auth", async (req, res) => {
     const { access_token } = req.body;
@@ -368,13 +368,17 @@ app.post("/search-users", (req, res) => {
         });
 });
 
-console.log("MONGO CONNECT");
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+// บน Vercel (serverless) ไม่ต้อง listen เอง — Vercel เรียก app ที่ export ไว้ด้านล่าง
+if (!process.env.VERCEL) {
+    app.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
+    });
+}
 mongoose
     .connect(uri)
     .then(() => {
         console.log("MongoDB connection established");
     })
     .catch((error) => console.log("MongoDB connection failed: ", error.message));
+
+module.exports = app;

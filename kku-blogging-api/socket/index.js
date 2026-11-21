@@ -5,7 +5,17 @@ const initializeSocket = () => {
   // SOCKET_PORT มาก่อน PORT — กันชนกับพอร์ตของ API ตอนรันคู่กัน (npm run dev:all)
   const io = new Server(Number(process.env.SOCKET_PORT || process.env.PORT) || 3004, {
     cors: {
-      origin: ["https://kku-client.vercel.app", "http://localhost:3000","https://www.kkublogging.com","https://kkublogging.com"],
+      // โดเมนเว็บผู้ใช้เพิ่มเติม (เช่นบน Vercel) ตั้งใน env FRONTEND_ENDPOINT ของ socket — คั่นด้วย , ได้
+      origin: [
+        "https://kku-client.vercel.app",
+        "http://localhost:3000",
+        "https://www.kkublogging.com",
+        "https://kkublogging.com",
+        ...(process.env.FRONTEND_ENDPOINT || "")
+          .split(",")
+          .map((url) => url.trim().replace(/\/$/, ""))
+          .filter(Boolean),
+      ],
       methods: ["GET", "POST"],
       credentials: true
     }
