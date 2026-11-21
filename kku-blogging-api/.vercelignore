@@ -1,0 +1,3 @@
+# socket server อยู่ในโฟลเดอร์ย่อย socket/ แต่ deploy แยก (WebSocket ใช้บน Vercel serverless ไม่ได้)
+# — ไม่ต้องอัปโหลดไปกับ API
+socket

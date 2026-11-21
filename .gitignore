@@ -3,9 +3,11 @@ test
 .idea
 .DS_Store
 
-# ผลลัพธ์จากการ build (client ใช้ Vite → client/build)
-client/build
-client/dist
+# ผลลัพธ์จากการ build (ทั้งสองเว็บใช้ Vite → <โฟลเดอร์>/build)
+kku-blogging-user/build
+kku-blogging-user/dist
+kku-blogging-admin/build
+kku-blogging-admin/dist
 
 # ค่าตั้งค่า / ข้อมูลลับ — ใช้ไฟล์ .env.example เป็นตัวอย่างแทน
 .env

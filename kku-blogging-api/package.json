@@ -1,0 +1,44 @@
+{
+  "name": "kku-blogging-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "socket": "npm --prefix socket start",
+    "dev:all": "concurrently -k -i -n api,socket -c blue,magenta \"npm run dev\" \"npm run socket\"",
+    "at-deploy": "git add . && git commit -m 'at-deploy' && git push"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "socket/*"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sit-sandbox/thai-bad-words": "^1.1.9",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.9",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "date-fns": "^3.5.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mjml": "^4.15.3",
+    "ml-knn": "^3.0.0",
+    "mongoose": "^8.2.2",
+    "multer": "^1.4.5-lts.1",
+    "nanoid": "^3.3.20",
+    "nodemailer": "^6.9.14",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.5",
+    "nodemon": "^3.1.4"
+  }
+}

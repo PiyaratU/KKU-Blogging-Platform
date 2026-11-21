@@ -12,8 +12,11 @@
 #     "username": "piyarat4543"
 # }
 
+# ใส่ access_token จากการเข้าสู่ระบบเอง — ห้าม commit token จริง
+@token = PASTE_ACCESS_TOKEN_HERE
+
 POST https://kku-for-deploy.onrender.com/create-blog
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDdiODVmMTE0NGI5NDlkNmFmNjg3NyIsImlhdCI6MTcyODYzNjYxOX0.LsdkFU7XqMrcNMR1xk-LjWWKRXOUuhGIsdKjsbKxfE8
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {

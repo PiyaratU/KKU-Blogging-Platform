@@ -1,0 +1,292 @@
+/*
+ * ธีมเว็บผู้ดูแลระบบให้หน้าตาเหมือนเว็บผู้ใช้ (kku-blogging-user)
+ * โหลดหลัง adminHome.css / adminProfile.css (ดู App.tsx) — ทับสี ฟอนต์ การ์ด เมนู ตาราง ให้ใช้ token ชุดเดียวกับ kku-blogging-user/src/global.css
+ * สีหลัก: ม่วงพาสเทล #e4d4f7 · ตัวหนังสือม่วงเข้ม #6d3a9c · พื้นจาง #f5effc · เส้น #ebebeb · ตัวหนังสือ #151111 / #494949 / #6b6b6b
+ */
+
+/* ── ตัวแปรของเทมเพลตแอดมิน → ค่าของเว็บผู้ใช้ (โหมดมืดยังทับได้ เพราะ .dark-theme-variables อยู่ที่ body) ── */
+:root {
+  --color-primary: #6d3a9c;
+  --color-primary-variant: #6d3a9c;
+  --color-danger: #be123c;
+  --color-success: #047857;
+  --color-warning: #b45309;
+  --color-white: #fff;
+  --color-info-dark: #6b6b6b;
+  --color-info-light: #ebebeb;
+  --color-dark: #151111;
+  --color-dark-variant: #494949;
+  --color-light: #f5effc;
+  --color-background: #fff;
+
+  --card-border-radius: 1rem;
+  --border-radius-1: 0.5rem;
+  --border-radius-2: 0.75rem;
+  --border-radius-3: 1rem;
+  --card-padding: 1.5rem;
+  --box-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+}
+
+/* ── ฟอนต์ / พื้นหลัง ── */
+:is(.adminHome, .adminProfile) {
+  font-family: "Kanit", sans-serif;
+  background: var(--color-background);
+  color: var(--color-dark);
+}
+:is(.adminHome, .adminProfile) :is(h1, h2, h3, h4, h5) {
+  font-family: "Kanit", sans-serif;
+  color: inherit;
+}
+:is(.adminHome, .adminProfile) .main1 > h1,
+:is(.adminHome, .adminProfile) .main1 h2 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ── เมนูด้านข้าง: แท็บที่เลือกเป็นพื้นม่วงจาง มุมมน (เหมือนเมนู navbar ของเว็บผู้ใช้) ── */
+:is(.adminHome, .adminProfile) aside > .sidebar > a {
+  margin: 0 0.75rem 0.25rem 0.75rem;
+  padding: 0 1rem;
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  color: var(--color-dark-variant);
+}
+:is(.adminHome, .adminProfile) aside .sidebar a svg {
+  font-size: 1.25rem;
+}
+:is(.adminHome, .adminProfile) aside .sidebar a:hover {
+  background: #f7f7f7;
+  color: var(--color-dark);
+}
+:is(.adminHome, .adminProfile) aside > .sidebar > a:hover > svg,
+:is(.adminHome, .adminProfile) aside .sidebar a.active svg {
+  margin-left: 0;
+}
+:is(.adminHome, .adminProfile) aside .sidebar a.active {
+  margin-left: 0.75rem;
+  background: #f5effc;
+  color: #6d3a9c;
+  font-weight: 500;
+}
+:is(.adminHome, .adminProfile) aside .sidebar a.active::before {
+  display: none;
+}
+:is(.adminHome, .adminProfile) aside .sidebar a:last-child {
+  width: calc(100% - 1.5rem);
+}
+
+/* ── การ์ดตัวเลข: พื้นขาว ขอบบาง มุม 1rem ไม่มีเงาหนา ── */
+:is(.adminHome, .adminProfile) .main1 .insights > div {
+  border: 1px solid #ebebeb;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--box-shadow);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+:is(.adminHome, .adminProfile) .main1 .insights > div:hover {
+  border-color: #e4d4f7;
+  box-shadow: var(--box-shadow);
+}
+:is(.adminHome, .adminProfile) .main1 .insights h1 {
+  font-weight: 600;
+}
+
+/* ไอคอนในการ์ด: วงกลมสีพาสเทล (สีเดียวกับแท็กของเว็บผู้ใช้) แทนวงสีสด */
+:is(.adminHome, .adminProfile) .main1 .insights > div :is(.svg1, .svg2, .svg3) {
+  border-radius: 0.75rem;
+  font-size: 2.25rem;
+  padding: 0.5rem;
+}
+:is(.adminHome, .adminProfile) .main1 .insights > div .svg1 {
+  background: #d1fae5;
+  color: #047857;
+}
+:is(.adminHome, .adminProfile) .main1 .insights > div .svg2 {
+  background: #fef3c7;
+  color: #b45309;
+}
+:is(.adminHome, .adminProfile) .main1 .insights > div .svg3 {
+  background: #ffe4e6;
+  color: #be123c;
+}
+
+/* ── ตาราง: กรอบขอบบาง หัวตารางสีรอง ── */
+:is(.adminHome, .adminProfile) .main1 .recent-order table {
+  border: 1px solid #ebebeb;
+  border-radius: 1rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  padding: 0.5rem 1rem 1rem;
+  box-shadow: var(--box-shadow);
+}
+:is(.adminHome, .adminProfile) .main1 .recent-order table:hover {
+  box-shadow: var(--box-shadow);
+}
+:is(.adminHome, .adminProfile) .main1 .recent-order table th {
+  padding: 1rem 0.5rem 0.75rem;
+  color: #6b6b6b;
+  font-weight: 500;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #ebebeb;
+}
+:is(.adminHome, .adminProfile) .main1 table tbody td {
+  border-bottom: 1px solid #ebebeb;
+}
+:is(.adminHome, .adminProfile) .main1 table tbody tr:hover td {
+  background: #faf7fe;
+}
+:is(.adminHome, .adminProfile) .main1 .recent-order a {
+  color: #6d3a9c;
+}
+
+/* ── ปุ่ม "เพิ่มคำถาม" / "เพิ่มรายการคำหยาบ" → หน้าตาปุ่มหลัก (ม่วงพาสเทล มุม 8px) ── */
+:is(.adminHome, .adminProfile) .add-q > div,
+:is(.adminHome, .adminProfile) .add-q.add-badwords {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: auto;
+  min-height: 2.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: #e4d4f7;
+  color: #6d3a9c;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+:is(.adminHome, .adminProfile) .add-q > div:hover,
+:is(.adminHome, .adminProfile) .add-q.add-badwords:hover {
+  background-color: #d8c2f2;
+}
+:is(.adminHome, .adminProfile) .add-q > div > a {
+  color: inherit;
+}
+/* manageQ: div.add-q เองคือปุ่ม */
+:is(.adminHome, .adminProfile) .main1 div.add-q:not(.add-badwords) > svg + span,
+:is(.adminHome, .adminProfile) div.add-q[class="add-q"] {
+  color: #6d3a9c;
+}
+:is(.adminHome, .adminProfile) div.add-q[class="add-q"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: #e4d4f7;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+:is(.adminHome, .adminProfile) div.add-q[class="add-q"]:hover {
+  background-color: #d8c2f2;
+}
+
+/* ── ช่องค้นหา / ช่องกรอก: พื้นเทาอ่อน มุมมน ขอบม่วงตอนพิมพ์ (เหมือนช่องค้นหาบน navbar) ── */
+:is(.adminHome, .adminProfile) :is(input[type="text"], input[type="search"], input[type="email"], input[type="password"], input:not([type]), select, textarea):not(.form-check-input) {
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background-color: #f7f7f7;
+  color: #151111;
+  font-family: "Kanit", sans-serif;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+:is(.adminHome, .adminProfile) :is(input, select, textarea):focus {
+  outline: none;
+  border-color: #e4d4f7;
+  background-color: #fff;
+  box-shadow: none;
+}
+
+/* ── หัวด้านขวา (สวัสดี / รูปโปรไฟล์ / สลับโหมด) ── */
+:is(.adminHome, .adminProfile) .theme-toggler {
+  background: #f7f7f7;
+  border-radius: 0.5rem;
+}
+:is(.adminHome, .adminProfile) .theme-toggler svg.active {
+  background: #e4d4f7;
+  color: #6d3a9c;
+  border-radius: 0.5rem;
+}
+
+/* ── ป้ายสี (สถานะ) ── */
+:is(.adminHome, .adminProfile) .primary {
+  color: #6d3a9c;
+}
+
+/* ── หน้าต่าง (modal ของ react-bootstrap) มุมมนเท่าการ์ด ── */
+.modal-content {
+  border: 1px solid #ebebeb;
+  border-radius: 1rem;
+  font-family: "Kanit", sans-serif;
+}
+.modal-header,
+.modal-footer {
+  border-color: #ebebeb;
+}
+
+/* ═══ หน้าโปรไฟล์ผู้ดูแลระบบ ═══ */
+.adminProfile .content-area {
+  background-color: #fff;
+}
+.adminProfile :is(.profile-form, .login-history, .tab-content) {
+  border: 1px solid #ebebeb;
+  border-radius: 1rem;
+  box-shadow: var(--box-shadow);
+}
+.adminProfile .tab-content th {
+  color: #6b6b6b;
+  font-weight: 500;
+}
+
+/* ปุ่ม: แก้ไข / บันทึก / เพิ่มแอดมิน = ปุ่มหลัก · เปลี่ยนรหัสผ่าน / ยกเลิก = ปุ่มรอง · ลบ = ปุ่มลบพาสเทล */
+.adminProfile :is(.edit-btn, .change-password-btn, .cancel-btn, .delete-btn, .add-admin-btn, .confirm-btn) {
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-family: "Kanit", sans-serif;
+  font-weight: 500;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.adminProfile :is(.edit-btn, .add-admin-btn, .confirm-btn) {
+  background-color: #e4d4f7;
+  color: #6d3a9c;
+}
+.adminProfile :is(.edit-btn, .add-admin-btn, .confirm-btn):hover {
+  background-color: #d8c2f2;
+  opacity: 1;
+}
+.adminProfile :is(.change-password-btn, .cancel-btn) {
+  background-color: #fff;
+  border-color: #ebebeb;
+  color: #151111;
+}
+.adminProfile :is(.change-password-btn, .cancel-btn):hover {
+  background-color: #f5effc;
+  border-color: #e4d4f7;
+}
+.adminProfile .delete-btn {
+  background-color: #ffe4e6;
+  color: #be123c;
+}
+.adminProfile .delete-btn:hover {
+  background-color: #fecdd3;
+  opacity: 1;
+}
+
+/* แท็บ "ประวัติการเข้าสู่ระบบ / แอดมินทั้งหมด" — แบบเมนูของเว็บผู้ใช้ */
+.adminProfile .tab-btn {
+  border-radius: 0.5rem;
+  color: #494949;
+  font-family: "Kanit", sans-serif;
+}
+.adminProfile .tab-btn:hover {
+  background-color: #f7f7f7;
+}
+.adminProfile .tab-btn.active {
+  background-color: #f5effc;
+  color: #6d3a9c;
+  font-weight: 500;
+}
